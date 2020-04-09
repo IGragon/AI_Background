@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(callCamera, ACTIVITY_START_CAMERA_APP);
     }
 
-    public void takePictureFromGallery(View view){
+    public void takePictureFromGallery(View view) {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -108,22 +108,27 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == ACTIVITY_START_CAMERA_APP) { // если получили картинку, что создается Bitmap и вставляется в ImageView на основном экране
             Bitmap photoCapturedBitmap = BitmapFactory.decodeFile(imageFileLocation);
             imageShowImageView.setImageBitmap(photoCapturedBitmap);
-        }else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку, что создается Bitmap и вставляется в ImageView на основном экране
+        } else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку, что создается Bitmap и вставляется в ImageView на основном экране
             Uri uri = data.getData();
             try {
                 currentImage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 currentImage = currentImage.copy(currentImage.getConfig(), true);
-                System.out.println(displayHeight + " " + displayWidth);
+                currentImage = makeBitmapToFitImageView(currentImage); // если прочитать название функции, то в принципе понятно, что она делает
 
-                ratio = ((float) currentImage.getHeight()) / ((float)currentImage.getWidth()); // изменение размера картинки, чтобы нормально помещалось в imageView
-                if (ratio > 1){
-                    imageShowImageView.setImageBitmap(Bitmap.createScaledBitmap(currentImage, (int)((displayHeight * guideline_percent) / ratio), (int)(displayHeight * guideline_percent), false));
-                }else{
-                    imageShowImageView.setImageBitmap(Bitmap.createScaledBitmap(currentImage, displayWidth, (int)(displayWidth / ratio), false));
-                }
+                imageShowImageView.setImageBitmap(currentImage);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    private Bitmap makeBitmapToFitImageView(Bitmap bitmap) { // изменение размера картинки, чтобы нормально помещалось в imageView
+        ratio = ((float) bitmap.getHeight()) / ((float) bitmap.getWidth());
+        if (ratio > 1) {
+            bitmap = Bitmap.createScaledBitmap(bitmap, (int) ((displayHeight * guideline_percent) / ratio), (int) (displayHeight * guideline_percent), false);
+        } else {
+            bitmap = Bitmap.createScaledBitmap(bitmap, displayWidth, (int) (displayWidth * ratio), false);
+        }
+        return bitmap;
     }
 }
