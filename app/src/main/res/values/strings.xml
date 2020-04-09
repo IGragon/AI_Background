@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">AI Background</string>
     <string name="take_picture">Take picture</string>
+    <string name="get_picture">Get picture from gallery</string>
+    <string name="choose_from_gallery">Choose from gallery</string>
+    <string name="layout_width_imageShow">wrap_content</string>
+    <string name="layout_height_imageShow">wrap_content</string>
 </resources>
