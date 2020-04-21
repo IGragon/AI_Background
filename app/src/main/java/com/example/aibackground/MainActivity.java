@@ -20,6 +20,7 @@ import android.view.Display;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,8 @@ import androidx.constraintlayout.widget.Guideline;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.IOException;
@@ -132,25 +135,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == RESULT_OK) { // если получили картинку, то создается Bitmap и вставляется в ImageView на основном экране
-            Bitmap photoFromCamera = null;
+        if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == RESULT_OK) { // если получили картинку, то вставляем ее в ImageView на основном экране
+            imageShowImageView.setImageDrawable(null);
+            Glide
+                    .with(this)
+                    .load(photoURI)
+                    .into(imageShowImageView);
             try {
-                photoFromCamera = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoURI);
-            } catch (IOException e) {
+                currentImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoURI);
+            }catch (IOException e){
                 e.printStackTrace();
             }
-            System.out.println(photoURI.toString());
-            if (photoFromCamera != null) {
-                putImageInImageView(photoFromCamera, photoURI);
-            } else {
-                Toast.makeText(this, "photoFromCamera is null!", Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку из галереи, то создается Bitmap и вставляется в ImageView на основном экране
+        } else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку из галереи, то вставляем ее в ImageView на основном экране
+            imageShowImageView.setImageDrawable(null);
             Uri uri = data.getData();
+            Glide
+                    .with(this)
+                    .load(uri)
+                    .into(imageShowImageView);
             try {
-                Bitmap photoFromGallery = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                putImageInImageView(photoFromGallery, uri);
-            } catch (IOException e) {
+                currentImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            }catch (IOException e){
                 e.printStackTrace();
             }
         }
@@ -167,49 +172,5 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    private Bitmap makeBitmapToFitImageView(Bitmap bitmap) { // изменение размера картинки, чтобы нормально помещалось в imageView
-        ratio = ((float) bitmap.getHeight()) / ((float) bitmap.getWidth());
-        if (ratio > 1) {
-            bitmap = Bitmap.createScaledBitmap(bitmap, (int) ((displayHeight * guideline_percent) / ratio), (int) (displayHeight * guideline_percent), false);
-        } else {
-            bitmap = Bitmap.createScaledBitmap(bitmap, displayWidth, (int) (displayWidth * ratio), false);
-        }
-        return bitmap;
-    }
-
-    private void putImageInImageView(Bitmap bitmap, Uri uri) {
-        ExifInterface exif;
-        try{
-            exif = new ExifInterface(uri.toString());
-            currentImage = bitmap.copy(bitmap.getConfig(), true);
-            currentImage = rotateBitmap(currentImage, exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, 1));
-            currentImage = makeBitmapToFitImageView(currentImage); // если прочитать название функции, то в принципе понятно, что она делает
-
-            imageShowImageView.setImageBitmap(currentImage);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    private Bitmap rotateBitmap(Bitmap bitmap, int rotation){
-        Matrix matrix = new Matrix();
-        switch (rotation){
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                matrix.postRotate(90);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                matrix.postRotate(180);
-                break;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                matrix.postRotate(270);
-                break;
-            default:
-                matrix.postRotate(0);
-                break;
-        }
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        return bitmap;
     }
 }
