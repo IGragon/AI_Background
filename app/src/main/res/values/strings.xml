@@ -5,4 +5,5 @@
     <string name="choose_from_gallery">Choose from gallery</string>
     <string name="layout_width_imageShow">wrap_content</string>
     <string name="layout_height_imageShow">wrap_content</string>
+    <string name="album_name">AIBackground Images</string>
 </resources>

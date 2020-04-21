@@ -18,7 +18,7 @@
         android:id="@+id/buttonPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="takePicture"
+        android:onClick="dispatchTakePictureIntent"
         android:text="@string/take_picture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/buttonGallery"
