@@ -9,12 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.8"
+        app:layout_constraintHeight_percent="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageShow"
+            android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
@@ -26,49 +26,34 @@
 
     </FrameLayout>
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.9" />
 
     <Button
-        android:id="@+id/buttonRender"
-        android:layout_width="match_parent"
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:onClick="renderImage"
-        android:text="@string/render"
+        android:onClick="backButton"
+        android:text="@string/back_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGallery" />
-
-    <Button
-        android:id="@+id/buttonPhoto"
-        android:layout_width="142dp"
-        android:layout_height="wrap_content"
-        android:onClick="dispatchTakePhotoIntent"
-        android:text="@string/take_picture"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRender"
-        app:layout_constraintEnd_toStartOf="@+id/buttonGallery"
+        app:layout_constraintEnd_toStartOf="@+id/choose_background_button"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <Button
-        android:id="@+id/buttonGallery"
-        android:layout_width="254dp"
+        android:id="@+id/choose_background_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="takeImageFromGallery"
-        android:text="@string/choose_from_gallery"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRender"
+        android:text="@string/choose_background"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/buttonPhoto"
+        app:layout_constraintStart_toEndOf="@+id/back_button"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

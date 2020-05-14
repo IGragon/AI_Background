@@ -3,13 +3,9 @@ package com.example.aibackground;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.Point;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,16 +14,14 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.Guideline;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -44,8 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_WRITE_EXTERNAL_STORAGE_AND_CAMERA = 69;
     private static final int REQUEST_CAMERA = 123;
     private static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
-    private Bitmap currentImage;
+    private Uri currentImageUri;
     private ImageView imageShowImageView;
+    private Button renderButton;
     private String mCurrentPhotoPath;
     private File storageDir;
     private Uri photoURI;
@@ -67,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         displayHeight = size.y;
 
         imageShowImageView = findViewById(R.id.imageShow);
+        renderButton = findViewById(R.id.buttonRender);
         requestRuntimePermission();
     }
 
@@ -86,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,  /* префикс */
+                ".jpg",         /* суффикс */
+                storageDir      /* директория */
         );
 
         // Save a file: path for use with ACTION_VIEW intents
@@ -97,39 +93,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void dispatchTakePictureIntent(View view) {
+    public void dispatchTakePhotoIntent(View view) { // сделать фото с помощью приложения камеры
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
         } else {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            // Ensure that there's a camera activity to handle the intent
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                // Create the File where the photo should go
+            Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
                 File photoFile = null;
                 try {
                     photoFile = createImageFile();
                 } catch (IOException ex) {
-                    // Error occurred while creating the File
                     Toast.makeText(this, "photoFile is null!", Toast.LENGTH_SHORT).show();
                 }
-                // Continue only if the File was successfully created
                 if (photoFile != null) {
                     photoURI = FileProvider.getUriForFile(this,
                             "com.example.android.provider",
                             photoFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(takePictureIntent, ACTIVITY_START_CAMERA_APP);
+                    takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePhotoIntent, ACTIVITY_START_CAMERA_APP);
                 }
             }
         }
     }
 
-    public void takePictureFromGallery(View view) {
+    public void takeImageFromGallery(View view) { // получить изображение из галереи
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
 
-        startActivityForResult(Intent.createChooser(intent, getString(R.string.get_picture)), ACTIVITY_GET_IMAGE_FROM_GALLERY);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.get_image)), ACTIVITY_GET_IMAGE_FROM_GALLERY);
+    }
+
+    public void renderImage(View view) { // отправляемся в другую активити, где будет происходить обработка изображения
+        Intent intent = new Intent(this, RenderActivity.class);
+        intent.putExtra("image", currentImageUri.toString());
+
+        startActivity(intent);
     }
 
     @Override
@@ -141,11 +140,8 @@ public class MainActivity extends AppCompatActivity {
                     .with(this)
                     .load(photoURI)
                     .into(imageShowImageView);
-            try {
-                currentImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoURI);
-            }catch (IOException e){
-                e.printStackTrace();
-            }
+            currentImageUri = photoURI;
+            Log.d("picture is in here: ", photoURI.toString());
         } else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку из галереи, то вставляем ее в ImageView на основном экране
             imageShowImageView.setImageDrawable(null);
             Uri uri = data.getData();
@@ -153,15 +149,18 @@ public class MainActivity extends AppCompatActivity {
                     .with(this)
                     .load(uri)
                     .into(imageShowImageView);
-            try {
-                currentImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-            }catch (IOException e){
-                e.printStackTrace();
-            }
+            currentImageUri = uri;
         }
+
+        if (currentImageUri != null) {
+            renderButton.setEnabled(true);
+        } else {
+            renderButton.setEnabled(false);
+        }
+
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) { // обработка результатов запроса на разрешения
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CAMERA) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
