@@ -14,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageShow"
+            android:id="@+id/preview_image_imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
@@ -35,7 +35,7 @@
         app:layout_constraintGuide_percent="0.8" />
 
     <Button
-        android:id="@+id/buttonRender"
+        android:id="@+id/render_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:enabled="false"
@@ -44,31 +44,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGallery" />
+        app:layout_constraintTop_toBottomOf="@+id/gallery_button" />
 
     <Button
-        android:id="@+id/buttonPhoto"
+        android:id="@+id/photo_button"
         android:layout_width="142dp"
         android:layout_height="wrap_content"
         android:onClick="dispatchTakePhotoIntent"
         android:text="@string/take_picture"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRender"
-        app:layout_constraintEnd_toStartOf="@+id/buttonGallery"
+        app:layout_constraintBottom_toTopOf="@+id/render_button"
+        app:layout_constraintEnd_toStartOf="@+id/gallery_button"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
     <Button
-        android:id="@+id/buttonGallery"
+        android:id="@+id/gallery_button"
         android:layout_width="254dp"
         android:layout_height="wrap_content"
         android:onClick="takeImageFromGallery"
         android:text="@string/choose_from_gallery"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRender"
+        app:layout_constraintBottom_toTopOf="@+id/render_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/buttonPhoto"
+        app:layout_constraintStart_toEndOf="@+id/photo_button"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

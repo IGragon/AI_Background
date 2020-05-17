@@ -9,4 +9,5 @@
     <string name="render">Render picture</string>
     <string name="back_button">Back</string>
     <string name="choose_background">Choose background</string>
+    <string name="save_button">Save image</string>
 </resources>
