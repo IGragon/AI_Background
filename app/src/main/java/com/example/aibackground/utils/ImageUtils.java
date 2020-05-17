@@ -1,7 +1,13 @@
 package com.example.aibackground.utils;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.net.Uri;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.exifinterface.media.ExifInterface;
@@ -33,7 +39,7 @@ public class ImageUtils {
         return byteBuffer;
     }
 
-    public static Bitmap convertBytebufferMaskToBitmap(ByteBuffer byteBuffer, int imageSize, int NUM_CLASSES, int[] colors) {
+    public static Bitmap convertBytebufferMaskToBitmap(ByteBuffer byteBuffer, int imageSize, int NUM_CLASSES) {
         Bitmap maskImage = Bitmap.createBitmap(imageSize, imageSize, Bitmap.Config.ARGB_8888);
         int[][] mSegmentBits = new int[imageSize][imageSize];
         HashSet<Integer> itemsFound = new HashSet<>();
@@ -54,8 +60,10 @@ public class ImageUtils {
                 }
 
                 itemsFound.add(mSegmentBits[x][y]);
-                if (mSegmentBits[x][y] == 0 || mSegmentBits[x][y] == 15 || mSegmentBits[x][y] == 8 || mSegmentBits[x][y] == 12) {
-                    maskImage.setPixel(x, y, colors[mSegmentBits[x][y]]);
+                if (mSegmentBits[x][y] == 0) {
+                    maskImage.setPixel(x, y, Color.TRANSPARENT);
+                }else if(mSegmentBits[x][y] == 15 || mSegmentBits[x][y] == 8 || mSegmentBits[x][y] == 12){
+                    maskImage.setPixel(x, y, Color.BLACK);
                 }
             }
         }
@@ -79,18 +87,21 @@ public class ImageUtils {
     }
 
     public static Bitmap combineCutImageAndBackgroundImage(Bitmap cutBitmap, Bitmap backgroundBitmap) {
-        Bitmap resultBitmap = Bitmap.createBitmap(cutBitmap.getWidth(), cutBitmap.getHeight(), cutBitmap.getConfig());
+        int ct_midWidth = cutBitmap.getWidth() / 2;
+        int ct_midHeight = cutBitmap.getHeight() / 2;
+
+        int bg_midWidth = backgroundBitmap.getWidth() / 2;
+        int bg_midHeight = backgroundBitmap.getHeight() / 2;
+
         for (int y = 0; y < cutBitmap.getHeight(); ++y) {
             for (int x = 0; x < cutBitmap.getWidth(); ++x) {
-                if (cutBitmap.getPixel(x, y) == 0) {
-                    resultBitmap.setPixel(x, y, backgroundBitmap.getPixel(x, y));
-                } else {
-                    resultBitmap.setPixel(x, y, cutBitmap.getPixel(x, y));
+                if (cutBitmap.getPixel(x, y) != 0) {
+                    backgroundBitmap.setPixel(bg_midWidth - ct_midWidth + x, bg_midHeight - ct_midHeight + y, cutBitmap.getPixel(x, y));
                 }
             }
         }
 
-        return resultBitmap;
+        return backgroundBitmap;
     }
 
     public static Bitmap rotateBitmap(Bitmap bitmap, int rotate){
@@ -112,6 +123,51 @@ public class ImageUtils {
         } else {
             return bitmap;
         }
+    }
+
+    public static Bitmap rescaleBackgroundImage(Bitmap backgroundBitmap, Bitmap objectBitmap){
+        float bg_ratio = (float)backgroundBitmap.getWidth() / (float)backgroundBitmap.getHeight();
+        int bg_width, bg_height;
+
+        if (backgroundBitmap.getWidth() > backgroundBitmap.getHeight()){
+            if (objectBitmap.getWidth() > objectBitmap.getHeight()){
+                backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, objectBitmap.getWidth(), objectBitmap.getHeight(), false);
+                return backgroundBitmap;
+            }else {
+                bg_height = objectBitmap.getHeight();
+                bg_width = (int)(bg_height * bg_ratio);
+            }
+        }else {
+            if (objectBitmap.getWidth() > objectBitmap.getHeight()){
+                bg_width = objectBitmap.getWidth();
+                bg_height = (int)((float)bg_width / bg_ratio);
+            }else{
+                backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, objectBitmap.getWidth(), objectBitmap.getHeight(), false);
+                return backgroundBitmap;
+            }
+        }
+
+        return Bitmap.createScaledBitmap(backgroundBitmap, bg_width, bg_height, false);
+    }
+
+    public static String getRealPathFromGalleryURI(Uri contentUri, Context context) {
+        String wholeID = DocumentsContract.getDocumentId(contentUri);
+        String id = wholeID.split(":")[1];
+        String[] column = { MediaStore.Images.Media.DATA };
+        String sel = MediaStore.Images.Media._ID + "=?";
+        Cursor cursor = context.getContentResolver().
+                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        column, sel, new String[]{ id }, null);
+
+        String filePath = "";
+        int columnIndex = cursor.getColumnIndex(column[0]);
+
+        if (cursor.moveToFirst()) {
+            filePath = cursor.getString(columnIndex);
+        }
+
+        cursor.close();
+        return filePath;
     }
 
     public static int getImageOrientation(String imagePath){

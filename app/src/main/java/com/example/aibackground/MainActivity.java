@@ -2,18 +2,14 @@ package com.example.aibackground;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
@@ -27,9 +23,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.exifinterface.media.ExifInterface;
-
-import com.bumptech.glide.Glide;
 import static com.example.aibackground.utils.ImageUtils.*;
 
 import java.io.File;
@@ -46,12 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private Uri currentImageUri;
     private ImageView imageShowImageView;
     private Button renderButton;
-    private String mCurrentPhotoPath;
-    private File storageDir;
     private File photoFile;
     private Uri photoURI;
-    float guideline_percent = .9f;
-    float ratio;
     int displayHeight;
     int displayWidth;
 
@@ -154,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             currentImageUri = data.getData();
 
             requestRuntimePermissions();
-            imageOrientation = getImageOrientation(getRealPathFromGalleryURI(currentImageUri));
+            imageOrientation = getImageOrientation(getRealPathFromGalleryURI(currentImageUri, this));
         }
 
         if (currentImageUri != null) {
@@ -163,26 +152,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             renderButton.setEnabled(false);
         }
-    }
-
-    private String getRealPathFromGalleryURI(Uri contentUri) {
-        String wholeID = DocumentsContract.getDocumentId(contentUri);
-        String id = wholeID.split(":")[1];
-        String[] column = { MediaStore.Images.Media.DATA };
-        String sel = MediaStore.Images.Media._ID + "=?";
-        Cursor cursor = getContentResolver().
-                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        column, sel, new String[]{ id }, null);
-
-        String filePath = "";
-        int columnIndex = cursor.getColumnIndex(column[0]);
-
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex);
-        }
-
-        cursor.close();
-        return filePath;
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) { // обработка результатов запроса на разрешения

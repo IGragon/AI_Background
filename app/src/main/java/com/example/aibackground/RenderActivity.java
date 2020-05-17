@@ -2,17 +2,13 @@ package com.example.aibackground;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -36,46 +32,42 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 
 import static com.example.aibackground.utils.ImageUtils.*;
 
 public class RenderActivity extends AppCompatActivity {
 
-    private Uri originalImageUri;
-    private Bitmap originalImageBitmap;
-    private Bitmap backgroundImage;
-    private Bitmap finalImage;
-    private Bitmap cutImage;
-    private Bitmap maskImage;
-    private Random random = new Random();
-    private ImageView imageView;
-    private Button saveButton;
+    protected Uri originalImageUri;
+    protected Bitmap originalImageBitmap;
+    protected Bitmap backgroundImage;
+    protected Bitmap finalImage;
+    protected Bitmap cutImage;
+    protected Bitmap maskImage;
+    protected ImageView imageView;
+    protected Button saveButton;
 
 
-    private static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
-    private int imageOrientation;
+    protected static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
+    protected int imageOrientation;
 
-    private final int imageSize = 257;
-    private final int NUM_CLASSES = 21;
-    private final int numOfThreads = 4;
-    private final float IMAGE_MEAN = 128.0f;
-    private final float IMAGE_STD = 128.0f;
-    private int[] colors = new int[NUM_CLASSES];
-    private int[] lablesFound = new int[NUM_CLASSES];
-    private Interpreter tflite;
-    private Interpreter.Options tfOptions = new Interpreter.Options();
-    private ByteBuffer imgData;
-    private ByteBuffer segmentationMasks = ByteBuffer.allocateDirect(imageSize * imageSize * NUM_CLASSES * 4).order(ByteOrder.nativeOrder());
+    protected final int imageSize = 257;
+    protected final int NUM_CLASSES = 21;
+    protected final int numOfThreads = 4;
+    protected final float IMAGE_MEAN = 128.0f;
+    protected final float IMAGE_STD = 128.0f;
+    protected Interpreter tflite;
+    protected Interpreter.Options tfOptions = new Interpreter.Options();
+    protected ByteBuffer imgData;
+    protected ByteBuffer segmentationMasks = ByteBuffer.allocateDirect(imageSize * imageSize * NUM_CLASSES * 4).order(ByteOrder.nativeOrder());
 
 
-    private final static String[] labels = {"background", "aeroplane", "bicycle", "bird", "boat", // все объекты, которые может распознавать модель
+    protected final static String[] labels = {"background", "aeroplane", "bicycle", "bird", "boat", // все объекты, которые может распознавать модель
             "bottle", "bus", "car", "cat", "chair", "cow", "dining table", "dog", "horse",
             "motorbike", "person", "potted plant", "sheep", "sofa", "train", "tv"};
 
-    private static final String MODEL_PATH = "deeplabv3_257_mv_gpu.tflite";
+    protected static final String MODEL_PATH = "deeplabv3_257_mv_gpu.tflite"; // расположение модели tfLite
 
-    private MappedByteBuffer loadModelFile(Activity activity) throws IOException { // загрузчик модели
+    protected MappedByteBuffer loadModelFile(Activity activity) throws IOException { // загрузчик модели
         AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(MODEL_PATH);
         FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
         FileChannel fileChannel = inputStream.getChannel();
@@ -90,50 +82,14 @@ public class RenderActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_render);
-        makeRandomColors();
 
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
         imageView = (ImageView) findViewById(R.id.imageView);
         saveButton = (Button) findViewById(R.id.save_button);
 
-        try { // пытаемся загрузить модель
-            tfOptions.addDelegate(new GpuDelegate());
-            tfOptions.setNumThreads(numOfThreads);
-            tflite = new Interpreter(loadModelFile(this), tfOptions);
-            Log.d("tfLite", "has loaded");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Model is not found", Toast.LENGTH_LONG).show();
-            finish();
-        }
-
-        try { // пытаемся создать все нужное для работы модели
-            originalImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), originalImageUri);
-            originalImageBitmap = cropToSmallerSize(originalImageBitmap);
-            originalImageBitmap = rotateBitmap(originalImageBitmap, imageOrientation);
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalImageBitmap, imageSize, imageSize, false);
-
-            imgData = convertBitmapToByteBuffer(scaledBitmap, imageSize, IMAGE_MEAN, IMAGE_STD);
-            Log.d("imaData", "has created");
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Cannot convert bitmap to byteBuffer", Toast.LENGTH_LONG).show();
-            finish();
-        }
-
-        tflite.run(imgData, segmentationMasks); // запускаем модель
-        maskImage = convertBytebufferMaskToBitmap(segmentationMasks, imageSize, NUM_CLASSES, colors);
-        maskImage = Bitmap.createScaledBitmap(maskImage, originalImageBitmap.getWidth(), originalImageBitmap.getHeight(), false);
-
-        cutImage = layMaskOnImage(maskImage, originalImageBitmap);
-        imageView.setImageBitmap(cutImage);
-
-        for (int i = 0; i < NUM_CLASSES; ++i) {
-            if (lablesFound[i] > 0) {
-                Log.d("Item found", labels[i]);
-            }
-        }
+        RenderImage renderImage = new RenderImage();
+        renderImage.execute();
     }
 
     public void backButton(View view) {
@@ -156,16 +112,6 @@ public class RenderActivity extends AppCompatActivity {
             finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
-
-            ContentValues values = new ContentValues();
-
-            values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            values.put(MediaStore.MediaColumns.DATA, imageFileName);
-
-            this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-            Toast.makeText(this, "Image successfully saved", Toast.LENGTH_LONG).show();
             Log.d("PATH", imageFileName);
         } catch (Exception e) {
             e.printStackTrace();
@@ -177,67 +123,104 @@ public class RenderActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // получаем и обрабатываем задний фон из галереи
             imageView.setImageBitmap(null);
-            Uri uri = data.getData();
-            try {
-                int backgroundImageOrientation = getImageOrientation(getRealPathFromGalleryURI(uri));
-                backgroundImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
 
-                backgroundImage = Bitmap.createScaledBitmap(backgroundImage, cutImage.getWidth(), cutImage.getHeight(), false);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            finalImage = combineCutImageAndBackgroundImage(cutImage, backgroundImage);
-            imageView.setImageBitmap(finalImage);
+            MakeFinalImage makeFinalImage = new MakeFinalImage(); // создание конечного изображения в отдельным потоке чтобы не замораживать интерфейс
+            makeFinalImage.execute(data);
         }
-        if (finalImage != null) {
+        if (finalImage != null) { // включение кнопки сохранения
             saveButton.setEnabled(true);
         } else {
             saveButton.setEnabled(false);
         }
     }
 
-    private String createImageFileName() throws IOException {
-        // Create an image file name
+    protected String createImageFileName() throws IOException { // Создание имени файла
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "AIBG_JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_DCIM);
-        /*File image = File.createTempFile(
-                imageFileName,  *//* префикс *//*
-                ".jpg",         *//* суффикс *//*
-                storageDir      *//* директория *//*
-        );*/
 
         return storageDir.getAbsolutePath().concat(imageFileName.concat(".jpg"));
     }
 
-    private String getRealPathFromGalleryURI(Uri contentUri) {
-        String wholeID = DocumentsContract.getDocumentId(contentUri);
-        String id = wholeID.split(":")[1];
-        String[] column = { MediaStore.Images.Media.DATA };
-        String sel = MediaStore.Images.Media._ID + "=?";
-        Cursor cursor = getContentResolver().
-                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        column, sel, new String[]{ id }, null);
-
-        String filePath = "";
-        int columnIndex = cursor.getColumnIndex(column[0]);
-
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex);
+    class RenderImage extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
         }
 
-        cursor.close();
-        return filePath;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Log.d("RenderImage", "doInBackground: start");
+            try { // пытаемся загрузить модель
+                tfOptions.addDelegate(new GpuDelegate());
+                tfOptions.setNumThreads(numOfThreads);
+                tflite = new Interpreter(loadModelFile(RenderActivity.this), tfOptions);
+                Log.d("tfLite", "has loaded");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(RenderActivity.this, "Model is not found", Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            try { // пытаемся создать все нужное для работы модели
+                originalImageBitmap = MediaStore.Images.Media.getBitmap(RenderActivity.this.getContentResolver(), originalImageUri);
+                originalImageBitmap = cropToSmallerSize(originalImageBitmap);
+                originalImageBitmap = rotateBitmap(originalImageBitmap, imageOrientation);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(originalImageBitmap, imageSize, imageSize, false);
+
+                imgData = convertBitmapToByteBuffer(scaledBitmap, imageSize, IMAGE_MEAN, IMAGE_STD);
+                Log.d("imaData", "has created");
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(RenderActivity.this, "Cannot convert bitmap to byteBuffer", Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            tflite.run(imgData, segmentationMasks); // запускаем модель
+            maskImage = convertBytebufferMaskToBitmap(segmentationMasks, imageSize, NUM_CLASSES);
+            maskImage = Bitmap.createScaledBitmap(maskImage, originalImageBitmap.getWidth(), originalImageBitmap.getHeight(), false);
+
+            cutImage = layMaskOnImage(maskImage, originalImageBitmap);
+
+            Log.d("RenderImage", "doInBackground: finish");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            imageView.setImageBitmap(cutImage);
+        }
     }
 
-    private void makeRandomColors() {
-        colors[0] = Color.TRANSPARENT;
-        for (int i = 1; i < NUM_CLASSES; ++i) {
-            float r = random.nextFloat();
-            float g = random.nextFloat();
-            float b = random.nextFloat();
-            colors[i] = Color.argb((128), r, g, b);
+    class MakeFinalImage extends AsyncTask<Intent, Void, Void>{
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Intent... intents) {
+            Log.d("MakeFinalImage", "doInBackground: start");
+            Uri uri = intents[0].getData();
+            try {
+                int backgroundImageOrientation = getImageOrientation(getRealPathFromGalleryURI(uri, RenderActivity.this));
+                backgroundImage = MediaStore.Images.Media.getBitmap(RenderActivity.this.getContentResolver(), uri);
+                backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
+                backgroundImage = rescaleBackgroundImage(backgroundImage, cutImage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            finalImage = combineCutImageAndBackgroundImage(cutImage, backgroundImage);
+
+            Log.d("MakeFinalImage", "doInBackground: finish");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            imageView.setImageBitmap(finalImage);
         }
     }
 }
