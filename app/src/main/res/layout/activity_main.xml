@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimaryDark"
+    style="@style/AppTheme.FullScreen">
 
    <LinearLayout
        android:layout_width="match_parent"
-       android:layout_height="wrap_content"
+       android:layout_height="100dp"
        android:layout_weight="0.9"
        android:orientation="vertical">
+
+
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -22,6 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:orientation="vertical">
+
 
                 <TextView
                     android:layout_width="match_parent"
@@ -51,20 +55,22 @@
                     android:text="@string/mainActivity3"
                     android:textAlignment="center">
                 </TextView>
+
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageShow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:adjustViewBounds="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/imageShow"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:adjustViewBounds="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
    </LinearLayout>
 
@@ -92,7 +98,7 @@
                 style="@style/roundButtons"
                 android:layout_marginRight="20dp"
                 android:onClick="takeImageFromGallery"
-                android:src="@drawable/ic_add_a_photo_white_24dp" />
+                android:src="@drawable/ic_filter_black_24dp" />
 
             <ImageButton
                 style="@style/roundButtons"
@@ -103,7 +109,7 @@
             <ImageButton
                 style="@style/roundButtons"
                 android:id="@+id/buttonRender"
-                android:enabled="false"
+                android:defaultFocusHighlightEnabled="true"
                 android:onClick="renderImage"
                 android:src="@drawable/ic_camera_roll_white_24dp"
                 android:layout_marginLeft="20dp"/>
