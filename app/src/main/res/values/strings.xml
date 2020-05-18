@@ -14,4 +14,5 @@
     <string name="mainActivity2">you can choose photo or take</string>
     <string name="mainActivity3">and then render</string>
     <string name="render">Let me show you what magick is</string>
+    <string name="save_button">Save image</string>
 </resources>

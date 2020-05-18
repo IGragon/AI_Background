@@ -2,14 +2,16 @@ package com.example.aibackground;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
+import android.database.Cursor;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
@@ -26,8 +28,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.bumptech.glide.Glide;
+import static com.example.aibackground.utils.ImageUtils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,14 +40,16 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private static final int ACTIVITY_START_CAMERA_APP = 42; // просто коды запроса, чтобы отличать один от другого
-    private static final int REQUEST_WRITE_EXTERNAL_STORAGE_AND_CAMERA = 69;
+    private static final int REQUEST_PERMISSIONS = 69;
     private static final int REQUEST_CAMERA = 123;
     private static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
+    private int imageOrientation;
     private Uri currentImageUri;
     private ImageView imageShowImageView;
     private ImageButton renderButton;
     private String mCurrentPhotoPath;
     private File storageDir;
+    private File photoFile;
     private Uri photoURI;
     float guideline_percent = .9f;
     float ratio;
@@ -62,17 +68,19 @@ public class MainActivity extends AppCompatActivity {
         displayWidth = size.x;
         displayHeight = size.y;
 
-        imageShowImageView = findViewById(R.id.imageShow);
-        renderButton = findViewById(R.id.buttonRender);
-        requestRuntimePermission();
+        imageShowImageView = findViewById(R.id.preview_image_imageView);
+        renderButton = findViewById(R.id.render_button);
+        requestRuntimePermissions();
     }
 
-    public void requestRuntimePermission() { // запрос разрешения на доступ к памяти
+    public void requestRuntimePermissions() { // запрос разрешения на доступ к памяти
         if (Build.VERSION.SDK_INT >= 23) { // если сдк не меньше 23, то запрашиваем программно, иначе прописаных в манифесте достаточно
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                     != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, REQUEST_WRITE_EXTERNAL_STORAGE_AND_CAMERA);
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, REQUEST_PERMISSIONS);
             }
         }
     }
@@ -88,8 +96,6 @@ public class MainActivity extends AppCompatActivity {
                 storageDir      /* директория */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
 
@@ -100,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
-                File photoFile = null;
+                photoFile = null;
                 try {
                     photoFile = createImageFile();
                 } catch (IOException ex) {
@@ -128,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
     public void renderImage(View view) { // отправляемся в другую активити, где будет происходить обработка изображения
         Intent intent = new Intent(this, RenderActivity.class);
         intent.putExtra("image", currentImageUri.toString());
+        intent.putExtra("orientation", imageOrientation);
 
         startActivity(intent);
     }
@@ -135,30 +142,48 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == RESULT_OK) { // если получили картинку, то вставляем ее в ImageView на основном экране
+        if (requestCode == ACTIVITY_START_CAMERA_APP && resultCode == RESULT_OK) { // если получили картинку из камеры
             imageShowImageView.setImageDrawable(null);
-            Glide
-                    .with(this)
-                    .load(photoURI)
-                    .into(imageShowImageView);
+
             currentImageUri = photoURI;
-            Log.d("picture is in here: ", photoURI.toString());
-        } else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку из галереи, то вставляем ее в ImageView на основном экране
+
+            requestRuntimePermissions();
+            imageOrientation = getImageOrientation(photoFile.getAbsolutePath());
+        } else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку из галереи
             imageShowImageView.setImageDrawable(null);
-            Uri uri = data.getData();
-            Glide
-                    .with(this)
-                    .load(uri)
-                    .into(imageShowImageView);
-            currentImageUri = uri;
+
+            currentImageUri = data.getData();
+
+            requestRuntimePermissions();
+            imageOrientation = getImageOrientation(getRealPathFromGalleryURI(currentImageUri));
         }
 
         if (currentImageUri != null) {
+            imageShowImageView.setImageURI(currentImageUri);
             renderButton.setEnabled(true);
         } else {
             renderButton.setEnabled(false);
         }
+    }
 
+    private String getRealPathFromGalleryURI(Uri contentUri) {
+        String wholeID = DocumentsContract.getDocumentId(contentUri);
+        String id = wholeID.split(":")[1];
+        String[] column = { MediaStore.Images.Media.DATA };
+        String sel = MediaStore.Images.Media._ID + "=?";
+        Cursor cursor = getContentResolver().
+                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        column, sel, new String[]{ id }, null);
+
+        String filePath = "";
+        int columnIndex = cursor.getColumnIndex(column[0]);
+
+        if (cursor.moveToFirst()) {
+            filePath = cursor.getString(columnIndex);
+        }
+
+        cursor.close();
+        return filePath;
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) { // обработка результатов запроса на разрешения
@@ -170,6 +195,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(cameraIntent, ACTIVITY_START_CAMERA_APP);
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+        }else if(requestCode == REQUEST_PERMISSIONS){
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                && grantResults[2] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(this, "all permissions are granted", Toast.LENGTH_LONG).show();
+            } else{
+                Toast.makeText(this, "please grant every permission to make app work properly", Toast.LENGTH_LONG).show();
             }
         }
     }
