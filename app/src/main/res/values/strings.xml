@@ -6,7 +6,12 @@
     <string name="layout_width_imageShow">wrap_content</string>
     <string name="layout_height_imageShow">wrap_content</string>
     <string name="album_name">AIBackground Images</string>
-    <string name="render">Render picture</string>
     <string name="back_button">Back</string>
     <string name="choose_background">Choose background</string>
+    <string name="get_started">Get Started</string>
+    <string name="greetings">Let\'s make a first photo together</string>
+    <string name="mainActivity">Here goes our magic,</string>
+    <string name="mainActivity2">you can choose photo or take</string>
+    <string name="mainActivity3">and then render</string>
+    <string name="render">Let me show you what magick is</string>
 </resources>

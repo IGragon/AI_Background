@@ -1,17 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryDark">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.8"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_weight="0.9"
+       android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:textColor="#ffffff"
+                    android:text="@string/mainActivity"
+                    android:textAlignment="center">
+                </TextView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:textColor="#ffffff"
+                    android:text="@string/mainActivity2">
+                </TextView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="18dp"
+                    android:textColor="#ffffff"
+                    android:text="@string/mainActivity3"
+                    android:textAlignment="center">
+                </TextView>
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/imageShow"
@@ -24,7 +66,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </FrameLayout>
+   </LinearLayout>
 
 
     <androidx.constraintlayout.widget.Guideline
@@ -32,43 +74,42 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.81" />
 
-    <Button
-        android:id="@+id/buttonRender"
+<LinearLayout
+    style="@style/downSideBar">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:onClick="renderImage"
-        android:text="@string/render"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonGallery" />
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
 
-    <Button
-        android:id="@+id/buttonPhoto"
-        android:layout_width="142dp"
-        android:layout_height="wrap_content"
-        android:onClick="dispatchTakePhotoIntent"
-        android:text="@string/take_picture"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRender"
-        app:layout_constraintEnd_toStartOf="@+id/buttonGallery"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+            <ImageButton
+                style="@style/roundButtons"
+                android:id="@+id/buttonGallery"
+                android:onClick="takeImageFromGallery"
+                android:src="@drawable/ic_add_a_photo_white_24dp"
+                android:layout_marginRight="20dp"/>
 
-    <Button
-        android:id="@+id/buttonGallery"
-        android:layout_width="254dp"
-        android:layout_height="wrap_content"
-        android:onClick="takeImageFromGallery"
-        android:text="@string/choose_from_gallery"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRender"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/buttonPhoto"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+            <ImageButton
+                style="@style/roundButtons"
+                android:id="@+id/buttonPhoto"
+                android:onClick="dispatchTakePhotoIntent"
+                android:src="@drawable/ic_camera_alt_white_24dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageButton
+                style="@style/roundButtons"
+                android:id="@+id/buttonRender"
+                android:enabled="false"
+                android:onClick="renderImage"
+                android:src="@drawable/ic_camera_roll_white_24dp"
+                android:layout_marginLeft="20dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
+
+
+</LinearLayout>

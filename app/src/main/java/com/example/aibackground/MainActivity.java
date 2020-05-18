@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
     private Uri currentImageUri;
     private ImageView imageShowImageView;
-    private Button renderButton;
+    private ImageButton renderButton;
     private String mCurrentPhotoPath;
     private File storageDir;
     private Uri photoURI;
