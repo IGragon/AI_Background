@@ -86,7 +86,7 @@ public class RenderActivity extends AppCompatActivity {
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
         imageView = (ImageView) findViewById(R.id.imageView);
-        saveButton = (Button) findViewById(R.id.save_button);
+//        saveButton = (Button) findViewById(R.id.save_button);
 
         RenderImage renderImage = new RenderImage();
         renderImage.execute();
@@ -127,11 +127,6 @@ public class RenderActivity extends AppCompatActivity {
             MakeFinalImage makeFinalImage = new MakeFinalImage(); // создание конечного изображения в отдельным потоке чтобы не замораживать интерфейс
             makeFinalImage.execute(data);
         }
-        if (finalImage != null) { // включение кнопки сохранения
-            saveButton.setEnabled(true);
-        } else {
-            saveButton.setEnabled(false);
-        }
     }
 
     protected String createImageFileName() throws IOException { // Создание имени файла
@@ -142,7 +137,7 @@ public class RenderActivity extends AppCompatActivity {
         return storageDir.getAbsolutePath().concat(imageFileName.concat(".jpg"));
     }
 
-    class RenderImage extends AsyncTask<Void, Void, Void>{
+    class RenderImage extends AsyncTask<Void, Void, Void>{ // поток для обработки входящего изображения
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -193,7 +188,7 @@ public class RenderActivity extends AppCompatActivity {
         }
     }
 
-    class MakeFinalImage extends AsyncTask<Intent, Void, Void>{
+    class MakeFinalImage extends AsyncTask<Intent, Void, Void>{ //
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -221,6 +216,11 @@ public class RenderActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             imageView.setImageBitmap(finalImage);
+            if (finalImage != null) { // включение кнопки сохранения
+                saveButton.setEnabled(true);
+            } else {
+                saveButton.setEnabled(false);
+            }
         }
     }
 }

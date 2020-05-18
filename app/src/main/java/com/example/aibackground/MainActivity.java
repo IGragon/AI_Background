@@ -12,7 +12,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Display;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private int imageOrientation;
     private Uri currentImageUri;
     private ImageView imageShowImageView;
-    private Button renderButton;
+    private ImageButton renderButton;
     private File photoFile;
     private Uri photoURI;
     int displayHeight;
@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         displayWidth = size.x;
         displayHeight = size.y;
 
-        imageShowImageView = findViewById(R.id.preview_image_imageView);
-        renderButton = findViewById(R.id.render_button);
+        imageShowImageView = findViewById(R.id.imageShow);
+        renderButton = findViewById(R.id.buttonRender);
         requestRuntimePermissions();
     }
 
