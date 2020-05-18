@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/imageShow"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
@@ -37,7 +37,24 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/render"
+                    android:text="@string/mainActivity"
+                    android:textAlignment="center"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp"
+                    android:textStyle="bold"></TextView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mainActivity2"
+                    android:textColor="#ffffff"
+                    android:textSize="18dp"
+                    android:textStyle="bold"></TextView>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mainActivity3"
                     android:textAlignment="center"
                     android:textColor="#ffffff"
                     android:textSize="18dp"
@@ -56,39 +73,40 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.81" />
 
-    <LinearLayout
+<LinearLayout
     style="@style/downSideBar">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
 
-                <ImageButton
-                    android:id="@+id/back_button"
-                    style="@style/roundButtons"
-                    android:onClick="backButton"
-                    android:src="@drawable/ic_chevron_left_black_24dp"
-                    android:layout_marginRight="20dp"/>
+            <ImageButton
+                android:id="@+id/buttonGallery"
+                style="@style/roundButtons"
+                android:layout_marginRight="20dp"
+                android:onClick="takeImageFromGallery"
+                android:src="@drawable/ic_add_a_photo_white_24dp" />
 
-                <ImageButton
-                    android:id="@+id/choose_background_button"
-                    style="@style/roundButtons"
-                    android:onClick="chooseBackground"
-                    android:src="@drawable/ic_image_black_24dp" />
+            <ImageButton
+                style="@style/roundButtons"
+                android:id="@+id/buttonPhoto"
+                android:onClick="dispatchTakePhotoIntent"
+                android:src="@drawable/ic_camera_alt_white_24dp"/>
 
-                <ImageButton
-                    android:id="@+id/buttonSave"
-                    style="@style/roundButtons"
-                    android:layout_marginLeft="20dp"
-                    android:onClick="saveFinalImage"
-                    android:src="@drawable/ic_save_black_24dp" />
-            </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
+            <ImageButton
+                style="@style/roundButtons"
+                android:id="@+id/buttonRender"
+                android:enabled="false"
+                android:onClick="renderImage"
+                android:src="@drawable/ic_camera_roll_white_24dp"
+                android:layout_marginLeft="20dp"/>
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>
 
 
 </LinearLayout>

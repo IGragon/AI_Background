@@ -113,6 +113,8 @@ public class RenderActivity extends AppCompatActivity {
             finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
+
+            Toast.makeText(this, "File successfully saved", Toast.LENGTH_LONG).show();
             Log.d("PATH", imageFileName);
         } catch (Exception e) {
             e.printStackTrace();

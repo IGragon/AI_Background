@@ -1,115 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/colorPrimaryDark">
-
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_weight="0.9"
-       android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="18dp"
-                    android:textColor="#ffffff"
-                    android:text="@string/mainActivity"
-                    android:textAlignment="center">
-                </TextView>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="18dp"
-                    android:textColor="#ffffff"
-                    android:text="@string/mainActivity2">
-                </TextView>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textSize="18dp"
-                    android:textColor="#ffffff"
-                    android:text="@string/mainActivity3"
-                    android:textAlignment="center">
-                </TextView>
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/imageShow"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp"
-            android:adjustViewBounds="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-   </LinearLayout>
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.81" />
-
-<LinearLayout
-    style="@style/downSideBar">
-
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="220dp"
+            android:background="@drawable/ic_upperspot">
+        </ImageView>
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
+            android:background="@drawable/ic_lightlowerspot"
+            android:layout_marginTop="300dp"
+            android:layout_marginLeft="50dp">
+        </ImageView>
 
-            <ImageButton
-                android:id="@+id/buttonGallery"
-                style="@style/roundButtons"
-                android:layout_marginRight="20dp"
-                android:onClick="takeImageFromGallery"
-                android:src="@drawable/ic_add_a_photo_white_24dp" />
 
-            <ImageButton
-                style="@style/roundButtons"
-                android:id="@+id/buttonPhoto"
-                android:onClick="dispatchTakePhotoIntent"
-                android:src="@drawable/ic_camera_alt_white_24dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_orangeupperspot"
+            android:layout_marginBottom="150dp"
+            android:layout_marginLeft="50dp">
 
-            <ImageButton
-                style="@style/roundButtons"
-                android:id="@+id/buttonRender"
-                android:enabled="false"
-                android:onClick="renderImage"
-                android:src="@drawable/ic_camera_roll_white_24dp"
-                android:layout_marginLeft="20dp"/>
-        </LinearLayout>
+        </ImageView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="470dp"
+            android:background="@drawable/ic_lowestvector">
+        </ImageView>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_lowestspot"
+            android:layout_marginTop="475dp">
+        </ImageView>
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="550dp"
+            android:text="@string/greetings"
+            android:textAlignment="center"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp"
+            android:textStyle="italic">
+
+        </TextView>
+
+        <Button
+            android:id="@+id/buttonStart"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="620dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/button_shape"
+            android:onClick="start"
+            android:text="@string/get_started"
+            android:textColor="@color/colorWhite"
+            android:textSize="22dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:text="@string/app_name"
+            android:textColor="@color/colorWhite"
+            android:textSize="30dp"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"/>
+
+
     </RelativeLayout>
-</LinearLayout>
-
 
 </LinearLayout>
