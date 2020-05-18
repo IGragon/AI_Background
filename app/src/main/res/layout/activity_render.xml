@@ -87,14 +87,17 @@
                     android:layout_marginRight="20dp"/>
 
                 <ImageButton
-                    style="@style/roundButtons"
                     android:id="@+id/choose_background_button"
-                    android:src="@drawable/ic_image_black_24dp"/>
-                <ImageButton
                     style="@style/roundButtons"
+                    android:onClick="chooseBackground"
+                    android:src="@drawable/ic_image_black_24dp" />
+
+                <ImageButton
                     android:id="@+id/buttonSave"
-                    android:src="@drawable/ic_save_black_24dp"
-                    android:layout_marginLeft="20dp"/>
+                    style="@style/roundButtons"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="saveFinalImage"
+                    android:src="@drawable/ic_save_black_24dp" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -44,7 +45,7 @@ public class RenderActivity extends AppCompatActivity {
     protected Bitmap cutImage;
     protected Bitmap maskImage;
     protected ImageView imageView;
-    protected Button saveButton;
+    protected ImageButton saveButton;
 
 
     protected static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
@@ -86,7 +87,7 @@ public class RenderActivity extends AppCompatActivity {
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
         imageView = (ImageView) findViewById(R.id.imageView);
-//        saveButton = (Button) findViewById(R.id.save_button);
+        saveButton = (ImageButton) findViewById(R.id.buttonSave);
 
         RenderImage renderImage = new RenderImage();
         renderImage.execute();

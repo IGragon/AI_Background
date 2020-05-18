@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
         displayWidth = size.x;
         displayHeight = size.y;
 
-        imageShowImageView = findViewById(R.id.imageShow);
-        renderButton = findViewById(R.id.buttonRender);
+        imageShowImageView = (ImageView) findViewById(R.id.imageShow);
+        renderButton = (ImageButton) findViewById(R.id.buttonRender);
         requestRuntimePermissions();
     }
 
