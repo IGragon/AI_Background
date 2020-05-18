@@ -74,8 +74,7 @@ public class ChooseImageActivity extends AppCompatActivity {
         }
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
+    private File createImageFile() throws IOException { // Создание файла для фото
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -147,9 +146,8 @@ public class ChooseImageActivity extends AppCompatActivity {
             imageOrientation = getImageOrientation(getRealPathFromGalleryURI(currentImageUri, this));
         }
 
-        if (currentImageUri != null) {
+        if (currentImageUri != null) { // если получили картинку, то вставляем ее(ее uri) в ImageView и делаем активной кнопку обработки
             imageShowImageView.setImageURI(currentImageUri);
-            Log.d("imageView", "yep");
             renderButton.setEnabled(true);
         } else {
             renderButton.setEnabled(false);

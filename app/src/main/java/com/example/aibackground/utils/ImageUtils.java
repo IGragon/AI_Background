@@ -18,6 +18,8 @@ import java.util.HashSet;
 
 public class ImageUtils {
 
+        public static final String UNKNOWN_FILE_PATH = "INVALID URI";
+
     public static ByteBuffer convertBitmapToByteBuffer(Bitmap bitmap, int imageSize, float IMAGE_MEAN, float IMAGE_STD) {
         int[] intValues = new int[bitmap.getWidth() * bitmap.getHeight()];
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(imageSize * imageSize * 3 * 4).order(ByteOrder.nativeOrder());
@@ -138,12 +140,12 @@ public class ImageUtils {
                 bg_width = (int)(bg_height * bg_ratio);
             }
         }else {
-            if (objectBitmap.getWidth() > objectBitmap.getHeight()){
-                bg_width = objectBitmap.getWidth();
-                bg_height = (int)((float)bg_width / bg_ratio);
-            }else{
+            if (objectBitmap.getWidth() < objectBitmap.getHeight()){
                 backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, objectBitmap.getWidth(), objectBitmap.getHeight(), false);
                 return backgroundBitmap;
+            }else{
+                bg_width = objectBitmap.getWidth();
+                bg_height = (int)((float)bg_width / bg_ratio);
             }
         }
 
@@ -151,26 +153,34 @@ public class ImageUtils {
     }
 
     public static String getRealPathFromGalleryURI(Uri contentUri, Context context) {
-        String wholeID = DocumentsContract.getDocumentId(contentUri);
-        String id = wholeID.split(":")[1];
-        String[] column = { MediaStore.Images.Media.DATA };
-        String sel = MediaStore.Images.Media._ID + "=?";
-        Cursor cursor = context.getContentResolver().
-                query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        column, sel, new String[]{ id }, null);
+        try {
+            Log.d("ImageUtils", "content Uri: " + contentUri.toString());
+            String wholeID = DocumentsContract.getDocumentId(contentUri);
+            String id = wholeID.split(":")[1];
+            String[] column = {MediaStore.Images.Media.DATA};
+            String sel = MediaStore.Images.Media._ID + "=?";
+            Cursor cursor = context.getContentResolver().
+                    query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                            column, sel, new String[]{id}, null);
 
-        String filePath = "";
-        int columnIndex = cursor.getColumnIndex(column[0]);
+            String filePath = "";
+            int columnIndex = cursor.getColumnIndex(column[0]);
 
-        if (cursor.moveToFirst()) {
-            filePath = cursor.getString(columnIndex);
+            if (cursor.moveToFirst()) {
+                filePath = cursor.getString(columnIndex);
+            }
+
+            cursor.close();
+            return filePath;
+        }catch (Exception e){
+            return UNKNOWN_FILE_PATH;
         }
-
-        cursor.close();
-        return filePath;
     }
 
     public static int getImageOrientation(String imagePath){
+        if (imagePath.equals(UNKNOWN_FILE_PATH)){
+            return 0;
+        }
         try {
             ExifInterface exifInterface = new ExifInterface(imagePath);
             switch (exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0)){
@@ -186,7 +196,6 @@ public class ImageUtils {
         }catch (Exception e){
             e.printStackTrace();
         }
-
         return 0;
     }
 }

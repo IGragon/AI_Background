@@ -2,6 +2,7 @@ package com.example.aibackground;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -12,7 +13,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -50,6 +50,7 @@ public class RenderActivity extends AppCompatActivity {
 
     protected static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
     protected int imageOrientation;
+    protected String folderName = "/AI Background/";
 
     protected final int imageSize = 257;
     protected final int NUM_CLASSES = 21;
@@ -105,14 +106,22 @@ public class RenderActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, getString(R.string.get_image)), ACTIVITY_GET_IMAGE_FROM_GALLERY);
     }
 
-    public void saveFinalImage(View view) {
+    public void saveFinalImage(View view) { // сохраняем конечное изображение
         try {
             String imageFileName = createImageFileName();
+            Log.d("finalImageFileName", imageFileName);
             FileOutputStream fos = new FileOutputStream(imageFileName);
 
             finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
+
+            ContentValues values = new ContentValues();
+
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.MediaColumns.DATA, imageFileName);
+
+            this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
             Toast.makeText(this, "File successfully saved", Toast.LENGTH_LONG).show();
             Log.d("PATH", imageFileName);
@@ -134,8 +143,14 @@ public class RenderActivity extends AppCompatActivity {
 
     protected String createImageFileName() throws IOException { // Создание имени файла
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "AIBG_JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_DCIM);
+        String imageFileName = "/AIBG_JPEG_" + timeStamp + "_";
+        String externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath();
+        File storageDir = new File(externalFilesDir + folderName);
+
+
+        if (!storageDir.exists()){
+            storageDir.mkdirs();
+        }
 
         return storageDir.getAbsolutePath().concat(imageFileName.concat(".jpg"));
     }
@@ -188,10 +203,12 @@ public class RenderActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             imageView.setImageBitmap(cutImage);
+
+            Log.d("RenderImage", "onPostExecute: finish");
         }
     }
 
-    class MakeFinalImage extends AsyncTask<Intent, Void, Void>{ //
+    class MakeFinalImage extends AsyncTask<Intent, Void, Void>{ // поток для обработки конечного ихображения
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -224,6 +241,8 @@ public class RenderActivity extends AppCompatActivity {
             } else {
                 saveButton.setEnabled(false);
             }
+
+            Log.d("MakeFinalImage", "onPostExecute: finish");
         }
     }
 }

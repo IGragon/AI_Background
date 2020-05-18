@@ -41,7 +41,7 @@
                     android:textAlignment="center"
                     android:textColor="#ffffff"
                     android:textSize="18dp"
-                    android:textStyle="bold"></TextView>
+                    android:textStyle="bold"/>
             </LinearLayout>
 
         </RelativeLayout>
