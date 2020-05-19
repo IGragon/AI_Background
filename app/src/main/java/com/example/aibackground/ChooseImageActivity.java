@@ -120,11 +120,15 @@ public class ChooseImageActivity extends AppCompatActivity {
     }
 
     public void renderImage(View view) { // отправляемся в другую активити, где будет происходить обработка изображения
-        Intent intent = new Intent(this, RenderActivity.class);
-        intent.putExtra("image", currentImageUri.toString());
-        intent.putExtra("orientation", imageOrientation);
+        if (currentImageUri != null) {
+            Intent intent = new Intent(this, RenderActivity.class);
+            intent.putExtra("image", currentImageUri.toString());
+            intent.putExtra("orientation", imageOrientation);
 
-        startActivity(intent);
+            startActivity(intent);
+        }else{
+            Toast.makeText(this, "Please choose image to render it", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -146,12 +150,7 @@ public class ChooseImageActivity extends AppCompatActivity {
             imageOrientation = getImageOrientation(getRealPathFromGalleryURI(currentImageUri, this));
         }
 
-        if (currentImageUri != null) { // если получили картинку, то вставляем ее(ее uri) в ImageView и делаем активной кнопку обработки
-            imageShowImageView.setImageURI(currentImageUri);
-            renderButton.setEnabled(true);
-        } else {
-            renderButton.setEnabled(false);
-        }
+        imageShowImageView.setImageURI(currentImageUri);
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) { // обработка результатов запроса на разрешения

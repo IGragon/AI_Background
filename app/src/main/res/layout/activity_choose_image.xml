@@ -100,7 +100,6 @@
             <ImageButton
                 style="@style/roundButtons"
                 android:id="@+id/buttonRender"
-                android:enabled="false"
                 android:onClick="renderImage"
                 android:src="@drawable/ic_camera_roll_white_24dp"
                 android:layout_marginLeft="20dp"/>

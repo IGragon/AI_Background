@@ -107,27 +107,31 @@ public class RenderActivity extends AppCompatActivity {
     }
 
     public void saveFinalImage(View view) { // сохраняем конечное изображение
-        try {
-            String imageFileName = createImageFileName();
-            Log.d("finalImageFileName", imageFileName);
-            FileOutputStream fos = new FileOutputStream(imageFileName);
+        if (finalImage != null) {
+            try {
+                String imageFileName = createImageFileName();
+                Log.d("finalImageFileName", imageFileName);
+                FileOutputStream fos = new FileOutputStream(imageFileName);
 
-            finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
+                finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+                fos.close();
 
-            ContentValues values = new ContentValues();
+                ContentValues values = new ContentValues();
 
-            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            values.put(MediaStore.MediaColumns.DATA, imageFileName);
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                values.put(MediaStore.MediaColumns.DATA, imageFileName);
 
-            this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-            Toast.makeText(this, "File successfully saved", Toast.LENGTH_LONG).show();
-            Log.d("PATH", imageFileName);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error while saving an image. Try again", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Image successfully saved", Toast.LENGTH_LONG).show();
+                Log.d("PATH", imageFileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error while saving an image. Try again", Toast.LENGTH_LONG).show();
+            }
+        }else{
+            Toast.makeText(this, "Please add background to the image to save it", Toast.LENGTH_LONG).show();
         }
     }
 
