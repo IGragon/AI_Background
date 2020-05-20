@@ -87,8 +87,9 @@
                     android:onClick="saveFinalImage"
                     android:src="@drawable/ic_save_black_24dp" />
             </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
 
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
