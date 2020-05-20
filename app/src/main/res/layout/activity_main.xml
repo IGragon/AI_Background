@@ -53,6 +53,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="50dp"
             android:layout_marginTop="550dp"
+            android:layout_marginBottom="120dp"
             android:text="@string/greetings"
             android:textAlignment="center"
             android:textColor="@color/colorWhite"

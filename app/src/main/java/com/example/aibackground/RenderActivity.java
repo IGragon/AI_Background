@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -38,21 +39,23 @@ import static com.example.aibackground.utils.ImageUtils.*;
 
 public class RenderActivity extends AppCompatActivity {
 
-    protected Uri originalImageUri;
+    protected Uri originalImageUri; // переменные для работы с UI
     protected Bitmap originalImageBitmap;
     protected Bitmap backgroundImage;
     protected Bitmap finalImage;
     protected Bitmap cutImage;
     protected Bitmap maskImage;
     protected ImageView imageView;
+    protected ImageView loadingView;
     protected ImageButton saveButton;
+    protected AnimationDrawable loadingAnimation;
 
 
     protected static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
     protected int imageOrientation;
     protected String folderName = "/AI Background/";
 
-    protected final int imageSize = 257;
+    protected final int imageSize = 257; // переменные для работы модели tfLite
     protected final int NUM_CLASSES = 21;
     protected final int numOfThreads = 4;
     protected final float IMAGE_MEAN = 128.0f;
@@ -81,24 +84,27 @@ public class RenderActivity extends AppCompatActivity {
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) { // во время создания активити
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_render);
 
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
-        imageView = (ImageView) findViewById(R.id.imageView);
+
+        imageView = (ImageView) findViewById(R.id.imageView); // инициализация Ui объектов
+        loadingView = (ImageView) findViewById(R.id.loadingView);
+        loadingAnimation = (AnimationDrawable) loadingView.getDrawable();
         saveButton = (ImageButton) findViewById(R.id.buttonSave);
 
-        RenderImage renderImage = new RenderImage();
+        RenderImage renderImage = new RenderImage(); // создание и запуск отдельного потока для обработки входящего изображения
         renderImage.execute();
     }
 
-    public void backButton(View view) {
+    public void backButton(View view) { // возвращение к выбору изображения
         finish();
     }
 
-    public void chooseBackground(View view) {
+    public void chooseBackground(View view) { // выбор фона
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -130,8 +136,8 @@ public class RenderActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Toast.makeText(this, "Error while saving an image. Try again", Toast.LENGTH_LONG).show();
             }
-        }else{
-            Toast.makeText(this, "Please add background to the image to save it", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Please add background to the image to save it", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -145,24 +151,27 @@ public class RenderActivity extends AppCompatActivity {
         }
     }
 
-    protected String createImageFileName() throws IOException { // Создание имени файла
+    protected String createImageFileName() throws IOException { // Создание имени файла сохоанения
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "/AIBG_JPEG_" + timeStamp + "_";
         String externalFilesDir = getExternalFilesDir(Environment.DIRECTORY_DCIM).getAbsolutePath();
         File storageDir = new File(externalFilesDir + folderName);
 
 
-        if (!storageDir.exists()){
+        if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
 
         return storageDir.getAbsolutePath().concat(imageFileName.concat(".jpg"));
     }
 
-    class RenderImage extends AsyncTask<Void, Void, Void>{ // поток для обработки входящего изображения
+    class RenderImage extends AsyncTask<Void, Void, Void> { // поток для обработки входящего изображения
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
+            loadingView.setVisibility(View.VISIBLE); // запускаем анимацию
+            loadingAnimation.start();
         }
 
         @Override
@@ -206,23 +215,29 @@ public class RenderActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            imageView.setImageBitmap(cutImage);
+
+            loadingAnimation.stop(); // останавливаем анимацию
+            loadingView.setVisibility(View.GONE);
+
+            imageView.setImageBitmap(cutImage); // ставим вырезанное изображение
 
             Log.d("RenderImage", "onPostExecute: finish");
         }
     }
 
-    class MakeFinalImage extends AsyncTask<Intent, Void, Void>{ // поток для обработки конечного ихображения
+    class MakeFinalImage extends AsyncTask<Intent, Void, Void> { // поток для обработки конечного ихображения
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            loadingView.setVisibility(View.VISIBLE); // начинаем анимацию
+            loadingAnimation.start();
         }
 
         @Override
         protected Void doInBackground(Intent... intents) {
             Log.d("MakeFinalImage", "doInBackground: start");
             Uri uri = intents[0].getData();
-            try {
+            try { // обрабатываем фон
                 int backgroundImageOrientation = getImageOrientation(getRealPathFromGalleryURI(uri, RenderActivity.this));
                 backgroundImage = MediaStore.Images.Media.getBitmap(RenderActivity.this.getContentResolver(), uri);
                 backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
@@ -239,12 +254,11 @@ public class RenderActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            loadingAnimation.stop(); // останавливаем анимацию
+            loadingView.setVisibility(View.GONE);
+
             imageView.setImageBitmap(finalImage);
-            if (finalImage != null) { // включение кнопки сохранения
-                saveButton.setEnabled(true);
-            } else {
-                saveButton.setEnabled(false);
-            }
 
             Log.d("MakeFinalImage", "onPostExecute: finish");
         }

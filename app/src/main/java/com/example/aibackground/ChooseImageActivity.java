@@ -4,16 +4,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+
 import static com.example.aibackground.utils.ImageUtils.*;
 
 import java.io.File;
@@ -36,33 +34,23 @@ public class ChooseImageActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS = 69;
     private static final int REQUEST_CAMERA = 123;
     private static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
-    private int imageOrientation;
-    private Uri currentImageUri;
-    private ImageView imageShowImageView;
-    private ImageButton renderButton;
-    private File photoFile;
-    private Uri photoURI;
-    int displayHeight;
-    int displayWidth;
+    private int imageOrientation; // ориентация изображения
+    private ImageView imageShowImageView; // UI
+    private File photoFile; // имя для фото
+    private Uri photoURI; // Uri фото
+    private Uri currentImageUri; // Uri для отправки в следующую активити
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { // во время создания активити
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_image);
 
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        displayWidth = size.x;
-        displayHeight = size.y;
-
-        imageShowImageView = (ImageView) findViewById(R.id.imageShow);
-        renderButton = (ImageButton) findViewById(R.id.buttonRender);
-        requestRuntimePermissions();
+        imageShowImageView = (ImageView) findViewById(R.id.imageShow); // Ui
+        requestRuntimePermissions(); // запрашивем разрешения
     }
 
-    public void requestRuntimePermissions() { // запрос разрешения на доступ к памяти
+    public void requestRuntimePermissions() { // запрос разрешения на доступ к памяти и камере
         if (Build.VERSION.SDK_INT >= 23) { // если сдк не меньше 23, то запрашиваем программно, иначе прописаных в манифесте достаточно
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -95,12 +83,13 @@ public class ChooseImageActivity extends AppCompatActivity {
             Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (takePhotoIntent.resolveActivity(getPackageManager()) != null) {
                 photoFile = null;
-                try {
+                try { // создаем файл для фото
                     photoFile = createImageFile();
                 } catch (IOException ex) {
-                    Toast.makeText(this, "photoFile is null!", Toast.LENGTH_SHORT).show();
+                    Log.d("ChooseImageActivity", "dispatchTakePhotoIntent: photoFile is null");
+                    ;
                 }
-                if (photoFile != null) {
+                if (photoFile != null) { // запускем камеру
                     photoURI = FileProvider.getUriForFile(this,
                             "com.example.android.provider",
                             photoFile);
@@ -126,8 +115,8 @@ public class ChooseImageActivity extends AppCompatActivity {
             intent.putExtra("orientation", imageOrientation);
 
             startActivity(intent);
-        }else{
-            Toast.makeText(this, "Please choose image to render it", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "Please choose image to render it", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -163,11 +152,11 @@ public class ChooseImageActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
             }
-        }else if(requestCode == REQUEST_PERMISSIONS){
+        } else if (requestCode == REQUEST_PERMISSIONS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                && grantResults[2] == PackageManager.PERMISSION_GRANTED){
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "all permissions are granted", Toast.LENGTH_LONG).show();
-            } else{
+            } else {
                 Toast.makeText(this, "please grant every permission to make app work properly", Toast.LENGTH_LONG).show();
             }
         }

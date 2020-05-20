@@ -18,9 +18,9 @@ import java.util.HashSet;
 
 public class ImageUtils {
 
-        public static final String UNKNOWN_FILE_PATH = "INVALID URI";
+    private static final String UNKNOWN_FILE_PATH = "INVALID URI";
 
-    public static ByteBuffer convertBitmapToByteBuffer(Bitmap bitmap, int imageSize, float IMAGE_MEAN, float IMAGE_STD) {
+    public static ByteBuffer convertBitmapToByteBuffer(Bitmap bitmap, int imageSize, float IMAGE_MEAN, float IMAGE_STD) { // конвертируем Bitmap в ByteBuffer
         int[] intValues = new int[bitmap.getWidth() * bitmap.getHeight()];
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(imageSize * imageSize * 3 * 4).order(ByteOrder.nativeOrder());
         byteBuffer.rewind();
@@ -41,7 +41,7 @@ public class ImageUtils {
         return byteBuffer;
     }
 
-    public static Bitmap convertBytebufferMaskToBitmap(ByteBuffer byteBuffer, int imageSize, int NUM_CLASSES) {
+    public static Bitmap convertBytebufferMaskToBitmap(ByteBuffer byteBuffer, int imageSize, int NUM_CLASSES) { // конвертируем ByteBuffer в Bitmap
         Bitmap maskImage = Bitmap.createBitmap(imageSize, imageSize, Bitmap.Config.ARGB_8888);
         int[][] mSegmentBits = new int[imageSize][imageSize];
         HashSet<Integer> itemsFound = new HashSet<>();
@@ -64,7 +64,7 @@ public class ImageUtils {
                 itemsFound.add(mSegmentBits[x][y]);
                 if (mSegmentBits[x][y] == 0) {
                     maskImage.setPixel(x, y, Color.TRANSPARENT);
-                }else if(mSegmentBits[x][y] == 15 || mSegmentBits[x][y] == 8 || mSegmentBits[x][y] == 12){
+                } else if (mSegmentBits[x][y] == 15 /*|| mSegmentBits[x][y] == 8 || mSegmentBits[x][y] == 12*/) {
                     maskImage.setPixel(x, y, Color.BLACK);
                 }
             }
@@ -73,7 +73,7 @@ public class ImageUtils {
         return maskImage;
     }
 
-    public static Bitmap layMaskOnImage(Bitmap maskBitmap, Bitmap bitmap) {
+    public static Bitmap layMaskOnImage(Bitmap maskBitmap, Bitmap bitmap) { // накладываем маску на изображение
         Bitmap resultBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         for (int y = 0; y < bitmap.getHeight(); ++y) {
             for (int x = 0; x < bitmap.getWidth(); ++x) {
@@ -88,7 +88,7 @@ public class ImageUtils {
         return resultBitmap;
     }
 
-    public static Bitmap combineCutImageAndBackgroundImage(Bitmap cutBitmap, Bitmap backgroundBitmap) {
+    public static Bitmap combineCutImageAndBackgroundImage(Bitmap cutBitmap, Bitmap backgroundBitmap) { // совмещаем фон и вырезанную картинку
         int ct_midWidth = cutBitmap.getWidth() / 2;
         int ct_midHeight = cutBitmap.getHeight() / 2;
 
@@ -106,13 +106,13 @@ public class ImageUtils {
         return backgroundBitmap;
     }
 
-    public static Bitmap rotateBitmap(Bitmap bitmap, int rotate){
+    public static Bitmap rotateBitmap(Bitmap bitmap, int rotate) { // поворачиваем Bitmap
         Matrix matrix = new Matrix();
         matrix.postRotate(rotate);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
-    public static Bitmap cropToSmallerSize(Bitmap bitmap) { // если изображение слишком большое
+    public static Bitmap cropToSmallerSize(Bitmap bitmap) { // если изображение слишком большое, что сводим его к формату 1080 на что-нибудь
         Bitmap resultBitmap;
         if (bitmap.getWidth() > 1080 || bitmap.getHeight() > 1080) {
             float ratio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
@@ -127,32 +127,32 @@ public class ImageUtils {
         }
     }
 
-    public static Bitmap rescaleBackgroundImage(Bitmap backgroundBitmap, Bitmap objectBitmap){
-        float bg_ratio = (float)backgroundBitmap.getWidth() / (float)backgroundBitmap.getHeight();
+    public static Bitmap rescaleBackgroundImage(Bitmap backgroundBitmap, Bitmap objectBitmap) { // изменяем размеры фона
+        float bg_ratio = (float) backgroundBitmap.getWidth() / (float) backgroundBitmap.getHeight();
         int bg_width, bg_height;
 
-        if (backgroundBitmap.getWidth() > backgroundBitmap.getHeight()){
-            if (objectBitmap.getWidth() > objectBitmap.getHeight()){
+        if (backgroundBitmap.getWidth() > backgroundBitmap.getHeight()) {
+            if (objectBitmap.getWidth() > objectBitmap.getHeight()) {
                 backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, objectBitmap.getWidth(), objectBitmap.getHeight(), false);
                 return backgroundBitmap;
-            }else {
+            } else {
                 bg_height = objectBitmap.getHeight();
-                bg_width = (int)(bg_height * bg_ratio);
+                bg_width = (int) (bg_height * bg_ratio);
             }
-        }else {
-            if (objectBitmap.getWidth() < objectBitmap.getHeight()){
+        } else {
+            if (objectBitmap.getWidth() < objectBitmap.getHeight()) {
                 backgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, objectBitmap.getWidth(), objectBitmap.getHeight(), false);
                 return backgroundBitmap;
-            }else{
+            } else {
                 bg_width = objectBitmap.getWidth();
-                bg_height = (int)((float)bg_width / bg_ratio);
+                bg_height = (int) ((float) bg_width / bg_ratio);
             }
         }
 
         return Bitmap.createScaledBitmap(backgroundBitmap, bg_width, bg_height, false);
     }
 
-    public static String getRealPathFromGalleryURI(Uri contentUri, Context context) {
+    public static String getRealPathFromGalleryURI(Uri contentUri, Context context) { // получаем реальный путь, если файл пришел из галереи
         try {
             Log.d("ImageUtils", "content Uri: " + contentUri.toString());
             String wholeID = DocumentsContract.getDocumentId(contentUri);
@@ -172,18 +172,18 @@ public class ImageUtils {
 
             cursor.close();
             return filePath;
-        }catch (Exception e){
+        } catch (Exception e) {
             return UNKNOWN_FILE_PATH;
         }
     }
 
-    public static int getImageOrientation(String imagePath){
-        if (imagePath.equals(UNKNOWN_FILE_PATH)){
+    public static int getImageOrientation(String imagePath) { // получаем ориентацию изображения
+        if (imagePath.equals(UNKNOWN_FILE_PATH)) {
             return 0;
         }
         try {
             ExifInterface exifInterface = new ExifInterface(imagePath);
-            switch (exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0)){
+            switch (exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0)) {
                 case ExifInterface.ORIENTATION_ROTATE_90:
                     return 90;
                 case ExifInterface.ORIENTATION_ROTATE_180:
@@ -193,7 +193,7 @@ public class ImageUtils {
                 default:
                     return 0;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
