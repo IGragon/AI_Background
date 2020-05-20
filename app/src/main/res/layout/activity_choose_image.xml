@@ -89,7 +89,7 @@
                 style="@style/roundButtons"
                 android:layout_marginRight="20dp"
                 android:onClick="takeImageFromGallery"
-                android:src="@drawable/ic_filter_black_24dp" />
+                android:src="@drawable/ic_image_black_24dp" />
 
             <ImageButton
                 style="@style/roundButtons"
@@ -101,7 +101,7 @@
                 style="@style/roundButtons"
                 android:id="@+id/buttonRender"
                 android:onClick="renderImage"
-                android:src="@drawable/ic_camera_roll_white_24dp"
+                android:src="@drawable/ic_content_cut_black_24dp"
                 android:layout_marginLeft="20dp"/>
         </LinearLayout>
     </RelativeLayout>

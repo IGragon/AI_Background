@@ -92,7 +92,7 @@
                     android:id="@+id/choose_background_button"
                     style="@style/roundButtons"
                     android:onClick="chooseBackground"
-                    android:src="@drawable/ic_image_black_24dp" />
+                    android:src="@drawable/ic_collections_black_24dp" />
 
                 <ImageButton
                     android:id="@+id/buttonSave"
