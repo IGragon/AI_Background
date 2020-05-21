@@ -87,7 +87,6 @@ public class ChooseImageActivity extends AppCompatActivity {
                     photoFile = createImageFile();
                 } catch (IOException ex) {
                     Log.d("ChooseImageActivity", "dispatchTakePhotoIntent: photoFile is null");
-                    ;
                 }
                 if (photoFile != null) { // запускем камеру
                     photoURI = FileProvider.getUriForFile(this,
