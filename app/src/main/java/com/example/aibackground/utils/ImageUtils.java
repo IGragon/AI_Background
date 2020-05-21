@@ -20,6 +20,10 @@ public class ImageUtils {
 
     private static final String UNKNOWN_FILE_PATH = "INVALID URI";
 
+    private final static String[] labels = {"background", "aeroplane", "bicycle", "bird", "boat", // все объекты, которые может распознавать модель
+            "bottle", "bus", "car", "cat", "chair", "cow", "dining table", "dog", "horse",
+            "motorbike", "person", "potted plant", "sheep", "sofa", "train", "tv"};
+
     public static ByteBuffer convertBitmapToByteBuffer(Bitmap bitmap, int imageSize, float IMAGE_MEAN, float IMAGE_STD) { // конвертируем Bitmap в ByteBuffer
         int[] intValues = new int[bitmap.getWidth() * bitmap.getHeight()];
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(imageSize * imageSize * 3 * 4).order(ByteOrder.nativeOrder());

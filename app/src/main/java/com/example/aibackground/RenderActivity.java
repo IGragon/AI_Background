@@ -66,11 +66,6 @@ public class RenderActivity extends AppCompatActivity {
     protected ByteBuffer imgData;
     protected ByteBuffer segmentationMasks = ByteBuffer.allocateDirect(imageSize * imageSize * NUM_CLASSES * 4).order(ByteOrder.nativeOrder());
 
-
-    protected final static String[] labels = {"background", "aeroplane", "bicycle", "bird", "boat", // все объекты, которые может распознавать модель
-            "bottle", "bus", "car", "cat", "chair", "cow", "dining table", "dog", "horse",
-            "motorbike", "person", "potted plant", "sheep", "sofa", "train", "tv"};
-
     protected static final String MODEL_PATH = "deeplabv3_257_mv_gpu.tflite"; // расположение модели tfLite
 
     protected MappedByteBuffer loadModelFile(Activity activity) throws IOException { // загрузчик модели
