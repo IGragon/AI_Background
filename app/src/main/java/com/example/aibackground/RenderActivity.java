@@ -53,6 +53,7 @@ public class RenderActivity extends AppCompatActivity {
 
     protected static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
     protected int imageOrientation;
+    protected boolean imageSaved = false;
     protected String folderName = "/AI Background/";
 
     protected final int imageSize = 257; // переменные для работы модели tfLite
@@ -114,30 +115,36 @@ public class RenderActivity extends AppCompatActivity {
 
     public void saveFinalImage(View view) { // сохраняем конечное изображение
         if (finalImage != null) {
-            try {
-                String imageFileName = createImageFileName();
-                Log.d("finalImageFileName", imageFileName);
-                FileOutputStream fos = new FileOutputStream(imageFileName);
+            if (!imageSaved) {
+                try {
+                    String imageFileName = createImageFileName();
+                    Log.d("finalImageFileName", imageFileName);
+                    FileOutputStream fos = new FileOutputStream(imageFileName);
 
-                finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                fos.flush();
-                fos.close();
+                    finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    fos.flush();
+                    fos.close();
 
-                ContentValues values = new ContentValues();
+                    ContentValues values = new ContentValues();
 
-                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                values.put(MediaStore.MediaColumns.DATA, imageFileName);
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                    values.put(MediaStore.MediaColumns.DATA, imageFileName);
 
-                this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                    this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-                Toast.makeText(this, "Image successfully saved", Toast.LENGTH_LONG).show();
-                Log.d("PATH", imageFileName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Error while saving an image. Try again", Toast.LENGTH_LONG).show();
+                    imageSaved = true;
+
+                    Toast.makeText(this, "Image successfully saved", Toast.LENGTH_SHORT).show();
+                    Log.d("PATH", imageFileName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Error while saving an image. Try again", Toast.LENGTH_LONG).show();
+                }
+            }else{
+                Toast.makeText(this, "This image has already been saved", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "Please add background to the image to save it", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please add background to the image to save it", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -254,6 +261,8 @@ public class RenderActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+            imageSaved = false;
 
             loadingAnimation.stop(); // останавливаем анимацию
             loadingView.setVisibility(View.GONE);
