@@ -1,14 +1,19 @@
 package com.example.aibackground;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,11 +23,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ShareCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import org.tensorflow.lite.Interpreter;
-import org.tensorflow.lite.gpu.GpuDelegate;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,9 +61,11 @@ public class RenderActivity extends AppCompatActivity {
 
 
     protected static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
+    private static final int REQUEST_PERMISSIONS = 69;
     protected int imageOrientation;
     protected boolean imageSaved = false;
     protected String folderName = "/AI Background/";
+    protected String savedImageName;
 
     protected final int imageSize = 257; // переменные для работы модели tfLite
     protected final int NUM_CLASSES = 21;
@@ -83,6 +94,7 @@ public class RenderActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) { // во время создания активити
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_render);
+        requestRuntimePermissions();
 
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
@@ -109,6 +121,39 @@ public class RenderActivity extends AppCompatActivity {
     }
 
     public void saveFinalImage(View view) { // сохраняем конечное изображение
+        saveImage();
+    }
+
+    public void shareImage(View view) {
+        if (!imageSaved) {
+            saveImage();
+        }
+        if (savedImageName != null) {
+            requestRuntimePermissions();
+            File imageFile = new File(savedImageName);
+            Uri uriToImage = FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".provider", imageFile);
+
+            Intent shareIntent =
+                    ShareCompat.IntentBuilder.from(this)
+                            .setType("image/jpeg")
+                            .setStream(uriToImage)
+                            .getIntent();
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            grantUriPermission(this.getApplicationContext().getPackageName(), uriToImage, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (shareIntent.resolveActivity(getPackageManager()) != null) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("", getString(R.string.sharing_text));
+                clipboard.setPrimaryClip(clip);
+
+                Toast.makeText(this, R.string.sharing_label, Toast.LENGTH_LONG).show();
+                startActivity(shareIntent);
+            }
+        }
+    }
+
+    protected void saveImage() {
         if (finalImage != null) {
             if (!imageSaved) {
                 try {
@@ -128,18 +173,19 @@ public class RenderActivity extends AppCompatActivity {
                     this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
                     imageSaved = true;
+                    savedImageName = imageFileName;
 
-                    Toast.makeText(this, "Image successfully saved", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.image_saved, Toast.LENGTH_SHORT).show();
                     Log.d("PATH", imageFileName);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(this, "Error while saving an image. Try again", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.error_while_saving_an_image, Toast.LENGTH_LONG).show();
                 }
-            }else{
-                Toast.makeText(this, "This image has already been saved", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, R.string.error_image_has_been_saved, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "Please add background to the image to save it", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.error_saving_image_without_background, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -167,6 +213,30 @@ public class RenderActivity extends AppCompatActivity {
         return storageDir.getAbsolutePath().concat(imageFileName.concat(".jpg"));
     }
 
+    public void requestRuntimePermissions() { // запрос разрешения на доступ к памяти и камере
+        if (Build.VERSION.SDK_INT >= 23) { // если сдк не меньше 23, то запрашиваем программно, иначе прописаных в манифесте достаточно
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA}, REQUEST_PERMISSIONS);
+            }
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) { // обработка результатов запроса на разрешения
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSIONS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "all permissions are granted", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "please grant every permission to make app work properly", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     class RenderImage extends AsyncTask<Void, Void, Void> { // поток для обработки входящего изображения
         @Override
         protected void onPreExecute() {
@@ -180,13 +250,13 @@ public class RenderActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             Log.d("RenderImage", "doInBackground: start");
             try { // пытаемся загрузить модель
-                tfOptions.addDelegate(new GpuDelegate());
+                //tfOptions.addDelegate(new GpuDelegate());
                 tfOptions.setNumThreads(numOfThreads);
                 tflite = new Interpreter(loadModelFile(RenderActivity.this), tfOptions);
                 Log.d("tfLite", "has loaded");
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(RenderActivity.this, "Model is not found", Toast.LENGTH_LONG).show();
+                Toast.makeText(RenderActivity.this, "Error while loading model", Toast.LENGTH_LONG).show();
                 finish();
             }
 
@@ -209,8 +279,6 @@ public class RenderActivity extends AppCompatActivity {
             maskImage = Bitmap.createScaledBitmap(maskImage, originalImageBitmap.getWidth(), originalImageBitmap.getHeight(), false);
 
             cutImage = layMaskOnImage(maskImage, originalImageBitmap);
-
-            Log.d("RenderImage", "doInBackground: finish");
             return null;
         }
 
@@ -240,16 +308,15 @@ public class RenderActivity extends AppCompatActivity {
             Log.d("MakeFinalImage", "doInBackground: start");
             Uri uri = intents[0].getData();
             try { // обрабатываем фон
-                int backgroundImageOrientation = getImageOrientation(getRealPathFromGalleryURI(uri, RenderActivity.this));
+                int backgroundImageOrientation = getImageOrientation(getRealPathFromURI(uri, RenderActivity.this));
                 backgroundImage = MediaStore.Images.Media.getBitmap(RenderActivity.this.getContentResolver(), uri);
                 backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
                 backgroundImage = rescaleBackgroundImage(backgroundImage, cutImage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            Log.d("MakeFinalImage", "cutImage: " + cutImage.getHeight() + ' ' + cutImage.getWidth() + " backgroundImage " + backgroundImage.getHeight() + ' ' + backgroundImage.getWidth());
             finalImage = combineCutImageAndBackgroundImage(cutImage, backgroundImage);
-
-            Log.d("MakeFinalImage", "doInBackground: finish");
             return null;
         }
 

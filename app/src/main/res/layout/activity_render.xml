@@ -38,28 +38,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/render"
-                    android:textAlignment="center"
-                    android:textColor="#ffffff"
-                    android:textSize="18dp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
-
-        </RelativeLayout>
-
     </LinearLayout>
 
 
@@ -100,6 +78,16 @@
                     android:layout_marginLeft="20dp"
                     android:onClick="saveFinalImage"
                     android:src="@drawable/ic_save_black_24dp" />
+
+                <ImageButton
+                    android:id="@+id/buttonShare"
+                    style="@style/roundButtons"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:onClick="shareImage"
+                    android:src="@drawable/ic_share_black_24dp" />
             </LinearLayout>
         </RelativeLayout>
     </LinearLayout>

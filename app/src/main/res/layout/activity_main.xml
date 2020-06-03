@@ -77,6 +77,21 @@
             android:textSize="22dp"
             android:textStyle="bold"/>
 
+        <Button
+            android:id="@+id/buttonSettings"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="620dp"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/button_shape"
+            android:onClick="start"
+            android:text="@string/get_started"
+            android:textColor="@color/colorWhite"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

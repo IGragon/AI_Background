@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_image" translatable="false">Obtener imagen de la galería</string>
+    <string name="get_started" translatable="false">Empecemos</string>
+    <string name="greetings" translatable="false">Vamos a hacer tu primera foto juntos</string>
+    <string name="error_trying_to_render_empty_image" translatable="false">Por favor, elige la imagen para renderizarla</string>
+    <string name="error_file_loading_failed" translatable="false">Error al cargar la imagen</string>
+    <string name="camera_permission_granted" translatable="false">Permiso de cámara otorgado</string>
+    <string name="camera_permission_denied" translatable="false">Permiso de cámara denegado</string>
+    <string name="all_permissions_are_granted" translatable="false">Todos los permisos son otorgados</string>
+    <string name="not_all_permissions_are_granted" translatable="false">Otorga todos los permisos para que la aplicación funcione correctamente</string>
+    <string name="image_saved" translatable="false">La imagen está guardada correctamente</string>
+    <string name="error_while_saving_an_image" translatable="false">Error mientras guardas, trata de nuevo</string>
+    <string name="error_image_has_been_saved" translatable="false">Esta imagen ya está guardada</string>
+    <string name="error_saving_image_without_background" translatable="false">Agregue fondo a la imagen para guardarla</string>
+</resources>

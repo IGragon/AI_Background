@@ -93,6 +93,7 @@ public class ImageUtils {
     }
 
     public static Bitmap combineCutImageAndBackgroundImage(Bitmap cutBitmap, Bitmap backgroundBitmap) { // совмещаем фон и вырезанную картинку
+        backgroundBitmap = backgroundBitmap.copy(backgroundBitmap.getConfig(), true);
         int ct_midWidth = cutBitmap.getWidth() / 2;
         int ct_midHeight = cutBitmap.getHeight() / 2;
 
@@ -156,7 +157,7 @@ public class ImageUtils {
         return Bitmap.createScaledBitmap(backgroundBitmap, bg_width, bg_height, false);
     }
 
-    public static String getRealPathFromGalleryURI(Uri contentUri, Context context) { // получаем реальный путь, если файл пришел из галереи
+    public static String getRealPathFromURI(Uri contentUri, Context context) { // получаем реальный путь, если файл пришел из галереи
         try {
             Log.d("ImageUtils", "content Uri: " + contentUri.toString());
             String wholeID = DocumentsContract.getDocumentId(contentUri);

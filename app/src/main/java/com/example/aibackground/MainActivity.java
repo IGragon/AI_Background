@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity { // приветствен�
         setContentView(R.layout.activity_main);
     }
 
-    public void start(View view){ // запускаем активити для выбора изображения
+    public void start(View view) { // запускаем активити для выбора изображения
         Intent chooseImageIntent = new Intent(this, ChooseImageActivity.class);
         startActivity(chooseImageIntent);
     }

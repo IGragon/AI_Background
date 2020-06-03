@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_image" translatable="false">Получить картинку из галереи</string>
+    <string name="get_started" translatable="false">Начнем!</string>
+    <string name="greetings" translatable="false">Давай сделаем первое фото вместе</string>
+    <string name="error_trying_to_render_empty_image" translatable="false">Выбирете изображение, чтобы его обработать</string>
+    <string name="error_file_loading_failed" translatable="false">Не удалось загрузить изображение</string>
+    <string name="camera_permission_granted" translatable="false">Получено разрешение на использование камеры</string>
+    <string name="camera_permission_denied" translatable="false">В использовании камеры отказано</string>
+    <string name="all_permissions_are_granted" translatable="false">Все разрешения даны</string>
+    <string name="not_all_permissions_are_granted" translatable="false">Пожалуйста дайте все разрешения, чтобы приложение работало корректно</string>
+    <string name="image_saved" translatable="false">Изображение успешно сохранено</string>
+    <string name="error_while_saving_an_image" translatable="false">Ошибка во время сохранения, попытайтесь снова</string>
+    <string name="error_image_has_been_saved" translatable="false">Это изображение уже сохранено</string>
+    <string name="error_saving_image_without_background" translatable="false">Добавте фон, чтобы сохранить изображение</string>
+</resources>

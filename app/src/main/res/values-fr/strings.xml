@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">AI Background</string>
     <string name="get_image" translatable="false">Get image from gallery</string>
     <string name="get_started" translatable="false">Get Started</string>
     <string name="greetings" translatable="false">Let\'s make a first photo together</string>
@@ -13,6 +13,4 @@
     <string name="error_while_saving_an_image" translatable="false">Error while saving an image. Try again</string>
     <string name="error_image_has_been_saved" translatable="false">This image has already been saved</string>
     <string name="error_saving_image_without_background" translatable="false">Please add background to the image to save it</string>
-    <string name="sharing_label" translatable="false">Please paste text from your clipboard, so your friends will know about this app</string>
-    <string name="sharing_text" translatable="false">Made with AI Background. Download: https://bit.ly/3drIOhy</string>
 </resources>

@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/imageShow"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="565dp"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
             android:adjustViewBounds="false"
@@ -29,38 +29,25 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="250dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
+                android:layout_centerInParent="true">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mainActivity"
-                    android:textAlignment="center"
-                    android:textColor="#ffffff"
-                    android:textSize="18dp"
-                    android:textStyle="bold"></TextView>
+                <ImageButton
+                    android:id="@+id/buttonRotateLeft"
+                    style="@style/roundButtons"
+                    android:visibility="gone"
+                    android:onClick="rotateLeft"
+                    android:src="@drawable/ic_rotate_left_black_24dp" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mainActivity2"
-                    android:textColor="#ffffff"
-                    android:textSize="18dp"
-                    android:textStyle="bold"></TextView>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/mainActivity3"
-                    android:textAlignment="center"
-                    android:textColor="#ffffff"
-                    android:textSize="18dp"
-                    android:textStyle="bold"></TextView>
+                <ImageButton
+                    android:id="@+id/buttonRotateRight"
+                    style="@style/roundButtons"
+                    android:visibility="gone"
+                    android:layout_marginLeft="20dp"
+                    android:onClick="rotateRight"
+                    android:src="@drawable/ic_rotate_right_black_24dp" />
             </LinearLayout>
-
         </RelativeLayout>
 
     </LinearLayout>
@@ -79,6 +66,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
