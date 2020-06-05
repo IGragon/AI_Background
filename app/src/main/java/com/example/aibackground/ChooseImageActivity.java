@@ -25,8 +25,6 @@ import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import static com.example.aibackground.utils.ImageUtils.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -154,6 +152,8 @@ public class ChooseImageActivity extends AppCompatActivity {
             btnRotateLeft.setVisibility(View.VISIBLE);
             btnRotateRight.setVisibility(View.VISIBLE);
         } catch (Exception e) {
+            currentImageBitmap = null;
+            currentImageUri = null;
             e.printStackTrace();
             Toast.makeText(this, R.string.error_file_loading_failed, Toast.LENGTH_SHORT).show();
         }
@@ -166,12 +166,13 @@ public class ChooseImageActivity extends AppCompatActivity {
             imageShowImageView.setImageDrawable(null);
 
             currentImageUri = photoURI;
+            fromUriToImageView();
         } else if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // если получили картинку из галереи
             imageShowImageView.setImageDrawable(null);
 
             currentImageUri = data.getData();
+            fromUriToImageView();
         }
-        fromUriToImageView();
     }
 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) { // обработка результатов запроса на разрешения

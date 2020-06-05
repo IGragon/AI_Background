@@ -14,7 +14,7 @@ import androidx.exifinterface.media.ExifInterface;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.HashSet;
+import java.util.ArrayList;
 
 public class ImageUtils {
 
@@ -44,37 +44,39 @@ public class ImageUtils {
 
         return byteBuffer;
     }
+    public static class ModelResultReader {
+        public Bitmap maskImage;
+        public boolean objectsAreFound;
+        public ModelResultReader(ByteBuffer byteBuffer, int imageSize, int NUM_CLASSES) { // конвертируем ByteBuffer в Bitmap
+            ArrayList resultList = new ArrayList();
+            maskImage = Bitmap.createBitmap(imageSize, imageSize, Bitmap.Config.ARGB_8888);
+            int[][] mSegmentBits = new int[imageSize][imageSize];
+            objectsAreFound = false;
 
-    public static Bitmap convertBytebufferMaskToBitmap(ByteBuffer byteBuffer, int imageSize, int NUM_CLASSES) { // конвертируем ByteBuffer в Bitmap
-        Bitmap maskImage = Bitmap.createBitmap(imageSize, imageSize, Bitmap.Config.ARGB_8888);
-        int[][] mSegmentBits = new int[imageSize][imageSize];
-        HashSet<Integer> itemsFound = new HashSet<>();
+            byteBuffer.rewind();
 
-        byteBuffer.rewind();
+            for (int y = 0; y < imageSize; ++y) {
+                for (int x = 0; x < imageSize; ++x) {
+                    float maxVal = 0f;
+                    mSegmentBits[x][y] = 0;
 
-        for (int y = 0; y < imageSize; ++y) {
-            for (int x = 0; x < imageSize; ++x) {
-                float maxVal = 0f;
-                mSegmentBits[x][y] = 0;
-
-                for (int c = 0; c < NUM_CLASSES; c++) {
-                    float value = byteBuffer.getFloat((y * imageSize * NUM_CLASSES + x * NUM_CLASSES + c) * 4);
-                    if (c == 0 || value > maxVal) {
-                        maxVal = value;
-                        mSegmentBits[x][y] = c;
+                    for (int c = 0; c < NUM_CLASSES; c++) {
+                        float value = byteBuffer.getFloat((y * imageSize * NUM_CLASSES + x * NUM_CLASSES + c) * 4);
+                        if (c == 0 || value > maxVal) {
+                            maxVal = value;
+                            mSegmentBits[x][y] = c;
+                        }
                     }
-                }
 
-                itemsFound.add(mSegmentBits[x][y]);
-                if (mSegmentBits[x][y] == 0) {
-                    maskImage.setPixel(x, y, Color.TRANSPARENT);
-                } else if (mSegmentBits[x][y] == 15 /*|| mSegmentBits[x][y] == 8 || mSegmentBits[x][y] == 12*/) {
-                    maskImage.setPixel(x, y, Color.BLACK);
+                    if (mSegmentBits[x][y] == 0) {
+                        maskImage.setPixel(x, y, Color.TRANSPARENT);
+                    } else if (mSegmentBits[x][y] == 15 /*|| mSegmentBits[x][y] == 8 || mSegmentBits[x][y] == 12*/) {
+                        maskImage.setPixel(x, y, Color.BLACK);
+                        objectsAreFound = true;
+                    }
                 }
             }
         }
-
-        return maskImage;
     }
 
     public static Bitmap layMaskOnImage(Bitmap maskBitmap, Bitmap bitmap) { // накладываем маску на изображение

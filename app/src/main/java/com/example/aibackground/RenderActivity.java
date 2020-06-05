@@ -64,6 +64,7 @@ public class RenderActivity extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS = 69;
     protected int imageOrientation;
     protected boolean imageSaved = false;
+    protected boolean objectsAreFound = false;
     protected String folderName = "/AI Background/";
     protected String savedImageName;
 
@@ -138,6 +139,7 @@ public class RenderActivity extends AppCompatActivity {
                             .setType("image/jpeg")
                             .setStream(uriToImage)
                             .getIntent();
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.sharing_text));
             shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -275,10 +277,15 @@ public class RenderActivity extends AppCompatActivity {
             }
 
             tflite.run(imgData, segmentationMasks); // запускаем модель
-            maskImage = convertBytebufferMaskToBitmap(segmentationMasks, imageSize, NUM_CLASSES);
-            maskImage = Bitmap.createScaledBitmap(maskImage, originalImageBitmap.getWidth(), originalImageBitmap.getHeight(), false);
+            ModelResultReader data = new ModelResultReader(segmentationMasks, imageSize, NUM_CLASSES);
+            objectsAreFound = data.objectsAreFound;
+            if (objectsAreFound){
+                maskImage = data.maskImage;
+                maskImage = Bitmap.createScaledBitmap(maskImage, originalImageBitmap.getWidth(), originalImageBitmap.getHeight(), false);
 
-            cutImage = layMaskOnImage(maskImage, originalImageBitmap);
+                cutImage = layMaskOnImage(maskImage, originalImageBitmap);
+                return null;
+            }
             return null;
         }
 
@@ -288,14 +295,17 @@ public class RenderActivity extends AppCompatActivity {
 
             loadingAnimation.stop(); // останавливаем анимацию
             loadingView.setVisibility(View.GONE);
-
-            imageView.setImageBitmap(cutImage); // ставим вырезанное изображение
-
+            if (objectsAreFound) {
+                imageView.setImageBitmap(cutImage); // ставим вырезанное изображение
+            }else{
+                Toast.makeText(RenderActivity.this, R.string.error_no_objects_found,Toast.LENGTH_LONG).show();
+                finish();
+            }
             Log.d("RenderImage", "onPostExecute: finish");
         }
     }
 
-    class MakeFinalImage extends AsyncTask<Intent, Void, Void> { // поток для обработки конечного ихображения
+    class MakeFinalImage extends AsyncTask<Intent, Void, Void> { // поток для обработки конечного изображения
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -315,7 +325,6 @@ public class RenderActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Log.d("MakeFinalImage", "cutImage: " + cutImage.getHeight() + ' ' + cutImage.getWidth() + " backgroundImage " + backgroundImage.getHeight() + ' ' + backgroundImage.getWidth());
             finalImage = combineCutImageAndBackgroundImage(cutImage, backgroundImage);
             return null;
         }

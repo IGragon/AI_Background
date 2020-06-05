@@ -3,7 +3,7 @@
     <string name="get_image" translatable="false">Get image from gallery</string>
     <string name="get_started" translatable="false">Get Started</string>
     <string name="greetings" translatable="false">Let\'s make a first photo together</string>
-    <string name="error_trying_to_render_empty_image" translatable="false">Please choose image to render it</string>
+    <string name="error_trying_to_render_empty_image" translatable="false">Please choose image to continue</string>
     <string name="error_file_loading_failed" translatable="false">Image loading failed</string>
     <string name="camera_permission_granted" translatable="false">Camera permission granted</string>
     <string name="camera_permission_denied" translatable="false">Camera permission denied</string>
@@ -13,6 +13,7 @@
     <string name="error_while_saving_an_image" translatable="false">Error while saving an image. Try again</string>
     <string name="error_image_has_been_saved" translatable="false">This image has already been saved</string>
     <string name="error_saving_image_without_background" translatable="false">Please add background to the image to save it</string>
-    <string name="sharing_label" translatable="false">Please paste text from your clipboard, so your friends will know about this app</string>
+    <string name="sharing_label" translatable="false">If text will not appear paste it from your clipboard</string>
     <string name="sharing_text" translatable="false">Made with AI Background. Download: https://bit.ly/3drIOhy</string>
+    <string name="error_no_objects_found" translatable="false">We cannot recognize any objects in this picture. Try another image</string>
 </resources>

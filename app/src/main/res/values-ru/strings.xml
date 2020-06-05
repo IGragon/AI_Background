@@ -13,4 +13,7 @@
     <string name="error_while_saving_an_image" translatable="false">Ошибка во время сохранения, попытайтесь снова</string>
     <string name="error_image_has_been_saved" translatable="false">Это изображение уже сохранено</string>
     <string name="error_saving_image_without_background" translatable="false">Добавте фон, чтобы сохранить изображение</string>
+    <string name="sharing_label" translatable="false">Если текст не появится, то вставьте его из буфера обмена</string>
+    <string name="sharing_text" translatable="false">Сделано с помощью AI Background. Скачать: https://bit.ly/3drIOhy</string>
+    <string name="error_no_objects_found" translatable="false">Не удалось распознать объекты на изображении, используйте другое изображение</string>
 </resources>
