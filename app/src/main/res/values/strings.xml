@@ -14,6 +14,6 @@
     <string name="error_image_has_been_saved" translatable="false">This image has already been saved</string>
     <string name="error_saving_image_without_background" translatable="false">Please add background to the image to save it</string>
     <string name="sharing_label" translatable="false">If text will not appear paste it from your clipboard</string>
-    <string name="sharing_text" translatable="false">Made with AI Background. Download: https://bit.ly/3drIOhy</string>
+    <string name="sharing_text" translatable="false">Made with AI Background. Download: https://bit.ly/3gW0P9D</string>
     <string name="error_no_objects_found" translatable="false">We cannot recognize any objects in this picture. Try another image</string>
 </resources>
