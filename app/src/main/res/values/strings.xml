@@ -16,4 +16,8 @@
     <string name="sharing_label" translatable="false">If text will not appear paste it from your clipboard</string>
     <string name="sharing_text" translatable="false">Made with AI Background. Download: https://bit.ly/3gW0P9D</string>
     <string name="error_no_objects_found" translatable="false">We cannot recognize any objects in this picture. Try another image</string>
+    
+    
+    <string name="gallery" translatable="false">Gallery</string>
+    <string name="gallery_description" translatable="false">Select a photo from gallery</string>
 </resources>
