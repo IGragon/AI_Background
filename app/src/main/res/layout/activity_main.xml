@@ -5,12 +5,17 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/materialCardView"
         android:layout_width="276dp"
         android:layout_height="170dp"
         app:cardBackgroundColor="@color/secondaryColor"
         app:cardCornerRadius="10dp"
+        app:cardUseCompatPadding="true"
+        android:padding="10dp"
+        android:elevation="10dp"
+        app:cardElevation="8dp"
+        app:cardPreventCornerOverlap="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -56,9 +61,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_picture" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/materialCardView2"
         android:layout_width="276dp"
         android:layout_height="170dp"
@@ -109,9 +114,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_picture" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:layout_width="276dp"
         android:layout_height="170dp"
         app:cardBackgroundColor="@color/secondaryColor"
@@ -161,7 +166,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_picture" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/imageView5"
