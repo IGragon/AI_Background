@@ -19,46 +19,50 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="351dp"
+        android:background="@color/secondaryColor"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        app:layout_constraintVertical_bias="0.189" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/button_shape"
+        android:padding="10dp"
         android:src="@drawable/ic_rotate_left_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintHorizontal_bias="0.369"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintVertical_bias="0.184" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/appCompatImageButton"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/button_shape"
-        android:src="@drawable/ic_rotate_left_black_24dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_rotate_right_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.619"
+        app:layout_constraintHorizontal_bias="0.642"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.187" />
+        app:layout_constraintVertical_bias="0.184" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/appCompatImageButton2"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/button_shape"
-        android:src="@drawable/ic_rotate_left_black_24dp"
+        android:src="@drawable/ic_content_cut_black_24dp"
+        android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.954"
@@ -68,10 +72,11 @@
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/appCompatImageButton3"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:background="@drawable/button_shape"
-        android:src="@drawable/ic_rotate_left_black_24dp"
+        android:padding="5dp"
+        android:src="@drawable/ic_chevron_left_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.045"

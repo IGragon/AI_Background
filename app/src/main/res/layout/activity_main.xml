@@ -7,25 +7,23 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/materialCardView"
-        android:layout_width="276dp"
+        android:layout_width="300dp"
         android:layout_height="170dp"
+        android:padding="10dp"
         app:cardBackgroundColor="@color/secondaryColor"
         app:cardCornerRadius="10dp"
-        app:cardUseCompatPadding="true"
-        android:padding="10dp"
-        android:elevation="10dp"
-        app:cardElevation="8dp"
         app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.115">
+        app:layout_constraintVertical_bias="0.155">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp">
+            android:layout_height="match_parent">
 
 
             <TextView
@@ -65,26 +63,26 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/materialCardView2"
-        android:layout_width="276dp"
+        android:layout_width="300dp"
         android:layout_height="170dp"
         app:cardBackgroundColor="@color/secondaryColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView"
-        app:layout_constraintVertical_bias="0.055">
+        app:layout_constraintVertical_bias="0.149">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp">
+            android:layout_height="match_parent">
 
 
             <TextView
                 android:id="@+id/textView11"
                 style="@style/Headers"
-                android:text="@string/gallery"
+                android:text="@string/camera"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.922"
@@ -95,7 +93,7 @@
             <TextView
                 style="@style/Text"
                 android:layout_marginBottom="56dp"
-                android:text="@string/gallery_description"
+                android:text="@string/camera_description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.912"
@@ -112,31 +110,30 @@
                 app:layout_constraintHorizontal_bias="0.153"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_picture" />
+                app:srcCompat="@drawable/ic_photo_camera" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="276dp"
+        android:layout_width="300dp"
         android:layout_height="170dp"
         app:cardBackgroundColor="@color/secondaryColor"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
-        app:layout_constraintVertical_bias="0.128">
+        app:layout_constraintVertical_bias="0.289">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp">
+            android:layout_height="match_parent">
 
 
             <TextView
                 android:id="@+id/textView12"
                 style="@style/Headers"
-                android:text="@string/gallery"
+                android:text="@string/settings"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.922"
@@ -147,7 +144,7 @@
             <TextView
                 style="@style/Text"
                 android:layout_marginBottom="56dp"
-                android:text="@string/gallery_description"
+                android:text="@string/settings_description"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.912"
@@ -164,7 +161,7 @@
                 app:layout_constraintHorizontal_bias="0.153"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_picture" />
+                app:srcCompat="@drawable/ic_metal_gear" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 

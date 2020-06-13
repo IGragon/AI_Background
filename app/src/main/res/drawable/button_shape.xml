@@ -8,10 +8,10 @@
             </stroke>
 
             <corners
-                android:bottomLeftRadius="20dp"
-                android:bottomRightRadius="20dp"
-                android:topLeftRadius="20dp"
-                android:topRightRadius="20dp">
+                android:bottomLeftRadius="50dp"
+                android:bottomRightRadius="50dp"
+                android:topLeftRadius="50dp"
+                android:topRightRadius="50dp">
             </corners>
         </shape>
     </item>
@@ -24,10 +24,10 @@
             </stroke>
 
             <corners
-                android:bottomLeftRadius="20dp"
-                android:bottomRightRadius="20dp"
-                android:topLeftRadius="20dp"
-                android:topRightRadius="20dp">
+                android:bottomLeftRadius="50dp"
+                android:bottomRightRadius="50dp"
+                android:topLeftRadius="50dp"
+                android:topRightRadius="50dp">
             </corners>
         </shape>
     </item>
