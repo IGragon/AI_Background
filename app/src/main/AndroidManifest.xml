@@ -21,23 +21,19 @@
         android:roundIcon="@mipmap/ic_logo_round"
         android:screenOrientation="portrait"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.FullScreen"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".RenderActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.FullScreen"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <data android:mimeType="image/*" />
@@ -47,7 +43,6 @@
         <activity
             android:name=".ChooseImageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.FullScreen"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
