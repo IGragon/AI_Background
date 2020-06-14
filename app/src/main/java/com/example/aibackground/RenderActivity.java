@@ -54,7 +54,8 @@ public class RenderActivity extends AppCompatActivity {
     protected Bitmap finalImage;
     protected Bitmap cutImage;
     protected Bitmap maskImage;
-    protected ImageView imageView;
+    //protected ImageView imageView;
+    protected ImageEditView imageEditView;
     protected ImageView loadingView;
     protected ImageButton saveButton;
     protected AnimationDrawable loadingAnimation;
@@ -100,7 +101,8 @@ public class RenderActivity extends AppCompatActivity {
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
 
-        imageView = (ImageView) findViewById(R.id.imageView); // инициализация Ui объектов
+        //imageView = (ImageView) findViewById(R.id.imageView); // инициализация Ui объектов
+        imageEditView = (ImageEditView) findViewById(R.id.imageEditView);
         loadingView = (ImageView) findViewById(R.id.loadingView);
         loadingAnimation = (AnimationDrawable) loadingView.getDrawable();
         saveButton = (ImageButton) findViewById(R.id.buttonSave);
@@ -194,10 +196,21 @@ public class RenderActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // получаем и обрабатываем задний фон из галереи
-            imageView.setImageBitmap(null);
+            //imageView.setImageBitmap(null);
 
-            MakeFinalImage makeFinalImage = new MakeFinalImage(); // создание конечного изображения в отдельным потоке чтобы не замораживать интерфейс
-            makeFinalImage.execute(data);
+            Uri uri = data.getData();
+            imageEditView.setBackgroundImage(null);
+            int backgroundImageOrientation = getImageOrientation(getRealPathFromURI(uri, RenderActivity.this));
+            try {
+                backgroundImage = MediaStore.Images.Media.getBitmap(RenderActivity.this.getContentResolver(), uri);
+                backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
+                backgroundImage = rescaleBackgroundImage(backgroundImage, cutImage);
+                imageEditView.setBackgroundImage(backgroundImage);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            //MakeFinalImage makeFinalImage = new MakeFinalImage(); // создание конечного изображения в отдельным потоке чтобы не замораживать интерфейс
+            //makeFinalImage.execute(data);
         }
     }
 
@@ -296,7 +309,8 @@ public class RenderActivity extends AppCompatActivity {
             loadingAnimation.stop(); // останавливаем анимацию
             loadingView.setVisibility(View.GONE);
             if (objectsAreFound) {
-                imageView.setImageBitmap(cutImage); // ставим вырезанное изображение
+                //imageView.setImageBitmap(cutImage); // ставим вырезанное изображение
+                imageEditView.setCutImage(cutImage);
             }else{
                 Toast.makeText(RenderActivity.this, R.string.error_no_objects_found,Toast.LENGTH_LONG).show();
                 finish();
@@ -338,7 +352,7 @@ public class RenderActivity extends AppCompatActivity {
             loadingAnimation.stop(); // останавливаем анимацию
             loadingView.setVisibility(View.GONE);
 
-            imageView.setImageBitmap(finalImage);
+            //imageView.setImageBitmap(finalImage);
 
             Log.d("MakeFinalImage", "onPostExecute: finish");
         }
