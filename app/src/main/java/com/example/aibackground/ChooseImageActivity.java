@@ -49,7 +49,7 @@ public class ChooseImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        imageShowImageView = (ImageView) findViewById(R.id.imageShow); // Ui
+        imageShowImageView = (ImageView) findViewById(R.id.imageViewPreview); // Ui
         btnRotateLeft = (ImageButton) findViewById(R.id.buttonRotateLeft);
         btnRotateRight = (ImageButton) findViewById(R.id.buttonRotateRight);
         requestRuntimePermissions(); // запрашивем разрешения
@@ -112,7 +112,7 @@ public class ChooseImageActivity extends AppCompatActivity {
         }
     }
 
-    public void takeImageFromGallery(View view) { // получить изображение из галереи
+    public void chooseImageFromGallery(View view) { // получить изображение из галереи
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);

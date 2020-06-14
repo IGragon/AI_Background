@@ -95,15 +95,15 @@ public class RenderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) { // во время создания активити
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_take_photo);
+        setContentView(R.layout.activity_preview);
         requestRuntimePermissions();
 
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
 
         //imageView = (ImageView) findViewById(R.id.imageView); // инициализация Ui объектов
-        imageEditView = (ImageEditView) findViewById(R.id.imageEditView);
-        loadingView = (ImageView) findViewById(R.id.loadingView);
+        imageEditView = (ImageEditView) findViewById(R.id.imageViewShowImage);
+        loadingView = (ImageView) findViewById(R.id.imageViewLoadingAnimation);
         loadingAnimation = (AnimationDrawable) loadingView.getDrawable();
         saveButton = (ImageButton) findViewById(R.id.buttonSave);
 
