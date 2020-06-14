@@ -95,7 +95,7 @@ public class RenderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) { // во время создания активити
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_render);
+        setContentView(R.layout.activity_take_photo);
         requestRuntimePermissions();
 
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity

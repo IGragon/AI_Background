@@ -47,7 +47,7 @@ public class ChooseImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) { // во время создания активити
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_image);
+        setContentView(R.layout.activity_main);
 
         imageShowImageView = (ImageView) findViewById(R.id.imageShow); // Ui
         btnRotateLeft = (ImageButton) findViewById(R.id.buttonRotateLeft);

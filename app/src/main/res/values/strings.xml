@@ -16,4 +16,15 @@
     <string name="sharing_label" translatable="false">If text will not appear paste it from your clipboard</string>
     <string name="sharing_text" translatable="false">Made with AI Background. Download: https://bit.ly/3gW0P9D</string>
     <string name="error_no_objects_found" translatable="false">We cannot recognize any objects in this picture. Try another image</string>
+    
+<!-- Cards-->
+    <!-- Gallery-->
+    <string name="gallery" translatable="false">Gallery</string>
+    <string name="gallery_description" translatable="false">Select a photo from gallery</string>
+    <!-- Camera-->
+    <string name="camera" translatable="false">Camera</string>
+    <string name="camera_description" translatable="false">Take a photo by camera</string>
+    <!-- Settings-->
+    <string name="settings" translatable="false">Settings</string>
+    <string name="settings_description" translatable="false">Here you can adjust app for yourself</string>
 </resources>
