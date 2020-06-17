@@ -134,6 +134,66 @@ public class ImageUtils {
         }
     }
 
+    public static Bitmap cutOffEmptyPixels(Bitmap bitmap){
+        int left = 0, top = 0, right = 0, bottom = 0;
+        int width, height;
+        boolean f = true;
+        for (int i = 0; i < bitmap.getHeight(); ++i){
+            for (int j = 0; j < bitmap.getWidth(); ++j){
+                if (bitmap.getPixel(j, i) != 0){
+                    top = i;
+                    f = false;
+                    break;
+                }
+            }
+            if (!f){
+                break;
+            }
+        }
+        f = true;
+        for (int i = 0; i < bitmap.getWidth(); ++i){
+            for (int j = 0; j < bitmap.getHeight(); ++j){
+                if (bitmap.getPixel(i, j) != 0){
+                    left = i;
+                    f = false;
+                    break;
+                }
+            }
+            if (!f){
+                break;
+            }
+        }
+        f = true;
+        for (int i = bitmap.getHeight() - 1; i >= 0 ; --i){
+            for (int j = 0; j < bitmap.getWidth(); ++j){
+                if (bitmap.getPixel(j, i) != 0){
+                    bottom = i;
+                    f = false;
+                    break;
+                }
+            }
+            if (!f){
+                break;
+            }
+        }
+        f = true;
+        for (int i = bitmap.getWidth() - 1; i >= 0; --i){
+            for (int j = 0; j < bitmap.getHeight(); ++j){
+                if (bitmap.getPixel(i, j) != 0){
+                    right = i;
+                    f = false;
+                    break;
+                }
+            }
+            if (!f){
+                break;
+            }
+        }
+        width = right - left;
+        height = bottom - top;
+        return Bitmap.createBitmap(bitmap, left, top, width, height);
+    }
+
     public static Bitmap rescaleBackgroundImage(Bitmap backgroundBitmap, Bitmap objectBitmap) { // изменяем размеры фона
         float bg_ratio = (float) backgroundBitmap.getWidth() / (float) backgroundBitmap.getHeight();
         int bg_width, bg_height;

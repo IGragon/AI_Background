@@ -79,7 +79,7 @@ public class RenderActivity extends AppCompatActivity {
     protected ByteBuffer imgData;
     protected ByteBuffer segmentationMasks = ByteBuffer.allocateDirect(imageSize * imageSize * NUM_CLASSES * 4).order(ByteOrder.nativeOrder());
 
-    protected static final String MODEL_PATH = "deeplabv3_257_mv_gpu.tflite"; // расположение модели tfLite
+    protected static final String MODEL_PATH = "deeplabv3_257_mv_gpu.tflite"; // имя модели tfLite
 
     protected MappedByteBuffer loadModelFile(Activity activity) throws IOException { // загрузчик модели
         AssetFileDescriptor fileDescriptor = activity.getAssets().openFd(MODEL_PATH);
@@ -95,14 +95,14 @@ public class RenderActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) { // во время создания активити
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preview);
+        setContentView(R.layout.activity_render);
         requestRuntimePermissions();
 
-        originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из MainActivity
+        originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из PreviewActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
 
         //imageView = (ImageView) findViewById(R.id.imageView); // инициализация Ui объектов
-        imageEditView = (ImageEditView) findViewById(R.id.imageViewShowImage);
+        imageEditView = (ImageEditView) findViewById(R.id.imageEditView);
         loadingView = (ImageView) findViewById(R.id.imageViewLoadingAnimation);
         loadingAnimation = (AnimationDrawable) loadingView.getDrawable();
         saveButton = (ImageButton) findViewById(R.id.buttonSave);
@@ -111,7 +111,7 @@ public class RenderActivity extends AppCompatActivity {
         renderImage.execute();
     }
 
-    public void backButton(View view) { // возвращение к выбору изображения
+    public void back(View view) { // возвращение к выбору изображения
         finish();
     }
 
@@ -297,6 +297,7 @@ public class RenderActivity extends AppCompatActivity {
                 maskImage = Bitmap.createScaledBitmap(maskImage, originalImageBitmap.getWidth(), originalImageBitmap.getHeight(), false);
 
                 cutImage = layMaskOnImage(maskImage, originalImageBitmap);
+                cutImage = cutOffEmptyPixels(cutImage);
                 return null;
             }
             return null;
@@ -335,7 +336,7 @@ public class RenderActivity extends AppCompatActivity {
                 int backgroundImageOrientation = getImageOrientation(getRealPathFromURI(uri, RenderActivity.this));
                 backgroundImage = MediaStore.Images.Media.getBitmap(RenderActivity.this.getContentResolver(), uri);
                 backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
-                backgroundImage = rescaleBackgroundImage(backgroundImage, cutImage);
+                //backgroundImage = rescaleBackgroundImage(backgroundImage, cutImage);
             } catch (Exception e) {
                 e.printStackTrace();
             }

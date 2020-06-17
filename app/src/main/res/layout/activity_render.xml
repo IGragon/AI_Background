@@ -18,8 +18,8 @@
         app:srcCompat="@drawable/ic_brainlogo_1" />
 
     <com.example.aibackground.ImageEditView
-        android:id="@+id/imageViewShowImage"
-        android:layout_width="0dp"
+        android:id="@+id/imageEditView"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintRight_toRightOf="parent"
@@ -37,51 +37,56 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/secondaryColor"
-        app:layout_constraintBottom_toBottomOf="@id/imageViewShowImage"
-        app:layout_constraintEnd_toEndOf="@id/imageViewShowImage"
-        app:layout_constraintStart_toStartOf="@id/imageViewShowImage"
-        app:layout_constraintTop_toTopOf="@id/imageViewShowImage" />
+        android:visibility="gone"
+        app:srcCompat="@drawable/loading"
+        app:layout_constraintBottom_toBottomOf="@id/imageEditView"
+        app:layout_constraintEnd_toEndOf="@id/imageEditView"
+        app:layout_constraintStart_toStartOf="@id/imageEditView"
+        app:layout_constraintTop_toTopOf="@id/imageEditView" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/buttonChooseBackground"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/button_shape"
+        android:onClick="chooseBackground"
         android:padding="12dp"
         android:src="@drawable/ic_collections_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewShowImage"
+        app:layout_constraintTop_toBottomOf="@+id/imageEditView"
         app:layout_constraintVertical_bias="0.574" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/buttonSave"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:padding="10dp"
         android:background="@drawable/button_shape"
+        android:onClick="saveFinalImage"
+        android:padding="10dp"
         android:src="@drawable/ic_save_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.707"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewShowImage"
+        app:layout_constraintTop_toBottomOf="@+id/imageEditView"
         app:layout_constraintVertical_bias="0.577" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/buttonBack"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:padding="5dp"
         android:background="@drawable/button_shape"
+        android:onClick="back"
+        android:padding="5dp"
         android:src="@drawable/ic_chevron_left_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.287"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewShowImage"
+        app:layout_constraintTop_toBottomOf="@+id/imageEditView"
         app:layout_constraintVertical_bias="0.576" />
 
 
