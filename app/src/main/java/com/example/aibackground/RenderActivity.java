@@ -54,7 +54,6 @@ public class RenderActivity extends AppCompatActivity {
     protected Bitmap finalImage;
     protected Bitmap cutImage;
     protected Bitmap maskImage;
-    //protected ImageView imageView;
     protected ImageEditView imageEditView;
     protected ImageView loadingView;
     protected ImageButton saveButton;
@@ -64,7 +63,7 @@ public class RenderActivity extends AppCompatActivity {
     protected static final int ACTIVITY_GET_IMAGE_FROM_GALLERY = 404;
     private static final int REQUEST_PERMISSIONS = 69;
     protected int imageOrientation;
-    protected boolean imageSaved = false;
+    protected static boolean imageSaved = false;
     protected boolean objectsAreFound = false;
     protected String folderName = "/AI Background/";
     protected String savedImageName;
@@ -101,8 +100,7 @@ public class RenderActivity extends AppCompatActivity {
         originalImageUri = Uri.parse(getIntent().getStringExtra("image")); // получение ссылки на изображение из PreviewActivity
         imageOrientation = getIntent().getIntExtra("orientation", 0);
 
-        //imageView = (ImageView) findViewById(R.id.imageView); // инициализация Ui объектов
-        imageEditView = (ImageEditView) findViewById(R.id.imageEditView);
+        imageEditView = (ImageEditView) findViewById(R.id.imageEditView); // инициализация Ui объектов
         loadingView = (ImageView) findViewById(R.id.imageViewLoadingAnimation);
         loadingAnimation = (AnimationDrawable) loadingView.getDrawable();
         saveButton = (ImageButton) findViewById(R.id.buttonSave);
@@ -124,12 +122,14 @@ public class RenderActivity extends AppCompatActivity {
     }
 
     public void saveFinalImage(View view) { // сохраняем конечное изображение
-        saveImage();
+        MakeFinalImage makeFinalImage = new MakeFinalImage();
+        makeFinalImage.execute();
     }
 
     public void shareImage(View view) {
         if (!imageSaved) {
-            saveImage();
+            MakeFinalImage makeFinalImage = new MakeFinalImage();
+            makeFinalImage.execute();
         }
         if (savedImageName != null) {
             requestRuntimePermissions();
@@ -158,46 +158,36 @@ public class RenderActivity extends AppCompatActivity {
     }
 
     protected void saveImage() {
-        if (finalImage != null) {
-            if (!imageSaved) {
-                try {
-                    String imageFileName = createImageFileName();
-                    Log.d("finalImageFileName", imageFileName);
-                    FileOutputStream fos = new FileOutputStream(imageFileName);
+        try {
+            String imageFileName = createImageFileName();
+            Log.d("finalImageFileName", imageFileName);
+            FileOutputStream fos = new FileOutputStream(imageFileName);
 
-                    finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.flush();
-                    fos.close();
+            finalImage.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
 
-                    ContentValues values = new ContentValues();
+            ContentValues values = new ContentValues();
 
-                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-                    values.put(MediaStore.MediaColumns.DATA, imageFileName);
+            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            values.put(MediaStore.MediaColumns.DATA, imageFileName);
 
-                    this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            this.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-                    imageSaved = true;
-                    savedImageName = imageFileName;
+            imageSaved = true;
+            savedImageName = imageFileName;
 
-                    Toast.makeText(this, R.string.image_saved, Toast.LENGTH_SHORT).show();
-                    Log.d("PATH", imageFileName);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, R.string.error_while_saving_an_image, Toast.LENGTH_LONG).show();
-                }
-            } else {
-                Toast.makeText(this, R.string.error_image_has_been_saved, Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(this, R.string.error_saving_image_without_background, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.image_saved, Toast.LENGTH_SHORT).show();
+            Log.d("PATH", imageFileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.error_while_saving_an_image, Toast.LENGTH_LONG).show();
         }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ACTIVITY_GET_IMAGE_FROM_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) { // получаем и обрабатываем задний фон из галереи
-            //imageView.setImageBitmap(null);
-
             Uri uri = data.getData();
             imageEditView.setBackgroundImage(null);
             int backgroundImageOrientation = getImageOrientation(getRealPathFromURI(uri, RenderActivity.this));
@@ -206,11 +196,10 @@ public class RenderActivity extends AppCompatActivity {
                 backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
                 backgroundImage = rescaleBackgroundImage(backgroundImage, cutImage);
                 imageEditView.setBackgroundImage(backgroundImage);
-            }catch (Exception e){
+                imageSaved = false;
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            //MakeFinalImage makeFinalImage = new MakeFinalImage(); // создание конечного изображения в отдельным потоке чтобы не замораживать интерфейс
-            //makeFinalImage.execute(data);
         }
     }
 
@@ -292,13 +281,12 @@ public class RenderActivity extends AppCompatActivity {
             tflite.run(imgData, segmentationMasks); // запускаем модель
             ModelResultReader data = new ModelResultReader(segmentationMasks, imageSize, NUM_CLASSES);
             objectsAreFound = data.objectsAreFound;
-            if (objectsAreFound){
+            if (objectsAreFound) {
                 maskImage = data.maskImage;
                 maskImage = Bitmap.createScaledBitmap(maskImage, originalImageBitmap.getWidth(), originalImageBitmap.getHeight(), false);
 
                 cutImage = layMaskOnImage(maskImage, originalImageBitmap);
                 cutImage = cutOffEmptyPixels(cutImage);
-                return null;
             }
             return null;
         }
@@ -310,50 +298,48 @@ public class RenderActivity extends AppCompatActivity {
             loadingAnimation.stop(); // останавливаем анимацию
             loadingView.setVisibility(View.GONE);
             if (objectsAreFound) {
-                //imageView.setImageBitmap(cutImage); // ставим вырезанное изображение
-                imageEditView.setCutImage(cutImage);
-            }else{
-                Toast.makeText(RenderActivity.this, R.string.error_no_objects_found,Toast.LENGTH_LONG).show();
+                imageEditView.setCutImage(cutImage); // ставим вырезанное изображение
+            } else {
+                Toast.makeText(RenderActivity.this, R.string.error_no_objects_found, Toast.LENGTH_LONG).show();
                 finish();
             }
             Log.d("RenderImage", "onPostExecute: finish");
         }
     }
 
-    class MakeFinalImage extends AsyncTask<Intent, Void, Void> { // поток для обработки конечного изображения
+    class MakeFinalImage extends AsyncTask<Void, Void, Void> { // поток для обработки конечного изображения
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            imageEditView.setVisibility(View.INVISIBLE);
             loadingView.setVisibility(View.VISIBLE); // начинаем анимацию
             loadingAnimation.start();
         }
 
         @Override
-        protected Void doInBackground(Intent... intents) {
+        protected Void doInBackground(Void... voids) {
             Log.d("MakeFinalImage", "doInBackground: start");
-            Uri uri = intents[0].getData();
-            try { // обрабатываем фон
-                int backgroundImageOrientation = getImageOrientation(getRealPathFromURI(uri, RenderActivity.this));
-                backgroundImage = MediaStore.Images.Media.getBitmap(RenderActivity.this.getContentResolver(), uri);
-                backgroundImage = rotateBitmap(backgroundImage, backgroundImageOrientation);
-                //backgroundImage = rescaleBackgroundImage(backgroundImage, cutImage);
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (backgroundImage != null && !imageSaved) {
+                finalImage = imageEditView.returnCombinedBitmap();
             }
-            finalImage = combineCutImageAndBackgroundImage(cutImage, backgroundImage);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-
-            imageSaved = false;
-
+            if (finalImage != null) {
+                if (!imageSaved) {
+                    saveImage();
+                } else {
+                    Toast.makeText(RenderActivity.this, R.string.error_image_has_been_saved, Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(RenderActivity.this, R.string.error_saving_image_without_background, Toast.LENGTH_LONG).show();
+            }
             loadingAnimation.stop(); // останавливаем анимацию
             loadingView.setVisibility(View.GONE);
-
-            //imageView.setImageBitmap(finalImage);
+            imageEditView.setVisibility(View.VISIBLE);
 
             Log.d("MakeFinalImage", "onPostExecute: finish");
         }

@@ -12,6 +12,8 @@ import android.util.Log;
 
 import androidx.exifinterface.media.ExifInterface;
 
+import com.example.aibackground.ImageEditView;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -92,25 +94,6 @@ public class ImageUtils {
         }
 
         return resultBitmap;
-    }
-
-    public static Bitmap combineCutImageAndBackgroundImage(Bitmap cutBitmap, Bitmap backgroundBitmap) { // совмещаем фон и вырезанную картинку
-        backgroundBitmap = backgroundBitmap.copy(backgroundBitmap.getConfig(), true);
-        int ct_midWidth = cutBitmap.getWidth() / 2;
-        int ct_midHeight = cutBitmap.getHeight() / 2;
-
-        int bg_midWidth = backgroundBitmap.getWidth() / 2;
-        int bg_midHeight = backgroundBitmap.getHeight() / 2;
-
-        for (int y = 0; y < cutBitmap.getHeight(); ++y) {
-            for (int x = 0; x < cutBitmap.getWidth(); ++x) {
-                if (cutBitmap.getPixel(x, y) != 0) {
-                    backgroundBitmap.setPixel(bg_midWidth - ct_midWidth + x, bg_midHeight - ct_midHeight + y, cutBitmap.getPixel(x, y));
-                }
-            }
-        }
-
-        return backgroundBitmap;
     }
 
     public static Bitmap rotateBitmap(Bitmap bitmap, int rotate) { // поворачиваем Bitmap

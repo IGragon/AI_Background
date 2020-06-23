@@ -36,7 +36,6 @@
         android:id="@+id/imageViewLoadingAnimation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/secondaryColor"
         android:visibility="gone"
         app:srcCompat="@drawable/loading"
         app:layout_constraintBottom_toBottomOf="@id/imageEditView"
