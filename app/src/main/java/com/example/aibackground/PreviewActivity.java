@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.core.app.ShareCompat;
 
+import com.example.aibackground.utils.ImageUtils;
+import com.example.aibackground.utils.ImageUtils.*;
+
 public class PreviewActivity extends AppCompatActivity {
     private int imageOrientation; // ориентация изображения
     private Bitmap currentImageBitmap;
@@ -32,11 +35,10 @@ public class PreviewActivity extends AppCompatActivity {
         ShareCompat.IntentReader intentReader = ShareCompat.IntentReader.from(this); // если "поделились" в это приложение
         if (intentReader.isShareIntent()) { // из интента получаем Uri
             currentImageUri = intentReader.getStream();
-            fromUriToImageView();
         }else{
             currentImageUri = Uri.parse(getIntent().getStringExtra("uri"));
-            fromUriToImageView();
         }
+        fromUriToImageView();
     }
 
     public void back(View view){
@@ -67,7 +69,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void fromUriToImageView() {
         try {
-            imageOrientation = 0;
+            imageOrientation = ImageUtils.getImageOrientation(ImageUtils.getRealPathFromURI(currentImageUri, this));
             currentImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), currentImageUri);
             imageViewPreview.setRotation(imageOrientation);
             imageViewPreview.setImageBitmap(currentImageBitmap);
