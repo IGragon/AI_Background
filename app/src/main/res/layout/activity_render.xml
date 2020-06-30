@@ -53,10 +53,10 @@
         android:src="@drawable/ic_collections_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.398"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageEditView"
-        app:layout_constraintVertical_bias="0.574" />
+        app:layout_constraintVertical_bias="0.578" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/buttonSave"
@@ -68,10 +68,25 @@
         android:src="@drawable/ic_save_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.707"
+        app:layout_constraintHorizontal_bias="0.662"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageEditView"
-        app:layout_constraintVertical_bias="0.577" />
+        app:layout_constraintVertical_bias="0.578" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/buttonSave2"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/button_shape"
+        android:onClick="saveFinalImage"
+        android:padding="10dp"
+        android:src="@drawable/ic_baseline_share_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.912"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageEditView"
+        app:layout_constraintVertical_bias="0.578" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/buttonBack"
@@ -83,10 +98,10 @@
         android:src="@drawable/ic_chevron_left_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.287"
+        app:layout_constraintHorizontal_bias="0.12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageEditView"
-        app:layout_constraintVertical_bias="0.576" />
+        app:layout_constraintVertical_bias="0.578" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
