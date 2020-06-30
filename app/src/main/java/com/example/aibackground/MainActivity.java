@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.preference.PreferenceManager;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -20,10 +22,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.aibackground.preferences.PreferenceActivity;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import com.example.aibackground.utils.LocaleHelper;
 
 public class MainActivity extends AppCompatActivity { // приветственная активити
     private static final int ACTIVITY_START_CAMERA_APP = 42; // просто коды запроса, чтобы отличать один от другого
@@ -35,13 +40,21 @@ public class MainActivity extends AppCompatActivity { // приветствен�
     private Uri currentImageUri; // Uri для передачи в следующую активити
     private File photoFile; // имя для фото
 
+    //PREFERENCES
+    private SharedPreferences sp;
+    private String mLanguageCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        mLanguageCode = sp.getString("lang", "0");
+        init();
+        LocaleHelper.setLocale(MainActivity.this, mLanguageCode);
         setContentView(R.layout.activity_main);
 
-
         requestRuntimePermissions(); // запрашивем разрешения
+
+
     }
 
     public void requestRuntimePermissions() { // запрос разрешения на доступ к памяти и камере
@@ -137,4 +150,15 @@ public class MainActivity extends AppCompatActivity { // приветствен�
             }
         }
     }
+
+    public void openPrefeneces(View view) {
+        Intent intent = new Intent(this, PreferenceActivity.class);
+        startActivity(intent);
+    }
+
+    private void init() {
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        mLanguageCode = sp.getString("lang", "en");
+    }
+
 }

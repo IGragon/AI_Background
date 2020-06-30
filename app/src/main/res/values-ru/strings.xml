@@ -16,4 +16,17 @@
     <string name="sharing_label" translatable="false">Если текст не появится, то вставьте его из буфера обмена</string>
     <string name="sharing_text" translatable="false">Сделано с помощью AI Background. Скачать: https://bit.ly/3gW0P9D</string>
     <string name="error_no_objects_found" translatable="false">Не удалось распознать объекты на изображении, используйте другое изображение</string>
+
+    <!-- Cards-->
+    <!-- Gallery-->
+    <string name="gallery" translatable="false">Галерея</string>
+    <string name="gallery_description" translatable="false">Выбрать фото из галереи</string>
+    <!-- Camera-->
+    <string name="camera" translatable="false">Камера</string>
+    <string name="camera_description" translatable="false">Сделать фото с помощью камеры</string>
+    <!-- Preferences-->
+    <string name="preferences" translatable="false">Настройки</string>
+    <string name="preference_description" translatable="false">Здесь можно настроить приложение на свой вкус</string>
+    <string name="preference_language" translatable="false">Язык</string>
+    <string name="preference_language_description" translatable="false">Нажмите здесь, чтобы поменять язык</string>
 </resources>

@@ -22,30 +22,39 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         tools:ignore="LockedOrientationActivity">
+
+        <activity android:name=".preferences.PreferenceActivity"
+            android:theme="@style/PreferenceScreen"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
+
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".RenderActivity"
-            android:theme="@style/Theme.AppCompat"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <data android:mimeType="image/*" />
-                <data android:mimeType="text/plain"/>
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".PreviewActivity"
-            android:theme="@style/Theme.AppCompat"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -66,6 +75,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

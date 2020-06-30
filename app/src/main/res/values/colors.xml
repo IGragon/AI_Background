@@ -4,4 +4,5 @@
     <color name="secondaryColor">#27395D</color>
     <color name="headerColor">#FFFFFF</color>
     <color name="textColor">#EEEEEE</color>
+    <color name="accentColor">#F5E44A</color>
 </resources>
