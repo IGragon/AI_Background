@@ -61,7 +61,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             editor.commit();
                             toast.show();
                             break;
-                        case "española":
+                        case "español":
                             mLanguageCode = getResources().getString(R.string.es);
                             editor.putString( "lang", mLanguageCode);
                             editor.commit();

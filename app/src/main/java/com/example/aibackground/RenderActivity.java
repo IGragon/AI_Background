@@ -311,9 +311,6 @@ public class RenderActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            imageEditView.setVisibility(View.INVISIBLE);
-            loadingView.setVisibility(View.VISIBLE); // начинаем анимацию
-            loadingAnimation.start();
         }
 
         @Override
@@ -337,9 +334,6 @@ public class RenderActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(RenderActivity.this, R.string.error_saving_image_without_background, Toast.LENGTH_LONG).show();
             }
-            loadingAnimation.stop(); // останавливаем анимацию
-            loadingView.setVisibility(View.GONE);
-            imageEditView.setVisibility(View.VISIBLE);
 
             Log.d("MakeFinalImage", "onPostExecute: finish");
         }
